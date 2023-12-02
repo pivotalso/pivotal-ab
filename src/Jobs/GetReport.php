@@ -2,12 +2,10 @@
 
 namespace eighttworules\LaravelAb\Jobs;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-
 class GetReport
 {
-
     public $experiment;
+
     /**
      * Create a new job instance.
      */
@@ -62,6 +60,4 @@ class GetReport
 
         return $info;
     }
-
-
 }

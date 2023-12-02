@@ -2,9 +2,9 @@
 
 namespace eighttworules\LaravelAb\Tests;
 
+use eighttworules\LaravelAb\LaravelAbServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use eighttworules\LaravelAb\LaravelAbServiceProvider;
 
 class TestCase extends Orchestra
 {

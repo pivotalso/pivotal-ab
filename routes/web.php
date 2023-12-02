@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use eighttworules\LaravelAb\Jobs\GetReport;
 use eighttworules\LaravelAb\Jobs\GetLists;
+use eighttworules\LaravelAb\Jobs\GetReport;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,9 +20,10 @@ Route::get('/ab/report', function () {
     $experiments = [];
     foreach ($reports as $report) {
         $experiments[] = [
-            'name'=> $report->experiment,
-            'conditions'=> dispatch_sync(new GetReport($report->experiment))
+            'name' => $report->experiment,
+            'conditions' => dispatch_sync(new GetReport($report->experiment)),
         ];
     }
+
     return view('laravel-ab::report', compact('experiments'));
 });

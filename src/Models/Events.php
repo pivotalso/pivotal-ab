@@ -1,13 +1,16 @@
 <?php
 
 namespace eighttworules\LaravelAb\Models;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Events extends Model
 {
     protected $table = 'ab_events';
+
     protected $fillable = ['name', 'value'];
-    protected $touches = array('instance');
+
+    protected $touches = ['instance'];
 
     public function experiment()
     {

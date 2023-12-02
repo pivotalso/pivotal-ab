@@ -2,22 +2,22 @@
 
 namespace eighttworules\LaravelAb;
 
-use Illuminate\Http\Request;
-use eighttworules\LaravelAb\Models\Goal;
 use eighttworules\LaravelAb\Models\Events;
-use eighttworules\LaravelAb\Models\Instance;
 use eighttworules\LaravelAb\Models\Experiments;
+use eighttworules\LaravelAb\Models\Goal;
+use eighttworules\LaravelAb\Models\Instance;
+use Illuminate\Http\Request;
 
 class LaravelAb
 {
     /**
-     * @var static $session
+     * @var static
      * Instance Object to identify user's session
      */
     protected static $session;
 
     /**
-     * @var $instance
+     * @var
      *
      * Tracks every $experiment->fired condition the view is initiating
      * and event key->value pais for the instance
@@ -28,10 +28,15 @@ class LaravelAb
      * Individual Test Parameters
      */
     protected $name;
+
     protected $conditions = [];
+
     protected $fired;
+
     protected $goal;
+
     protected $metadata_callback;
+
     /**
      * @var Request
      */
@@ -50,8 +55,8 @@ class LaravelAb
     public function ensureUser($forceSession = false)
     {
         $key = config('laravel-ab.cache_key');
-        $uid =  session()->get($key, md5(uniqid().$this->request->getClientIp()));
-        if (!session()->has($key) || $forceSession) {
+        $uid = session()->get($key, md5(uniqid().$this->request->getClientIp()));
+        if (! session()->has($key) || $forceSession) {
             $this->request->cookie(config('laravel-ab.cache_key'), $uid);
             session()->put($key, $uid);
         }
@@ -65,11 +70,11 @@ class LaravelAb
     }
 
     /**
-     * @param array $session_variables
+     * @param  array  $session_variables
      *                                 Load initial session variables to store or track
      *                                 Such as variables you want to track being passed into the template.
      */
-    public function setup(array $session_variables = array())
+    public function setup(array $session_variables = [])
     {
         foreach ($session_variables as $key => $value) {
             $experiment = new self();
@@ -84,7 +89,7 @@ class LaravelAb
      */
     public static function saveSession()
     {
-        if (!empty(self::$instance)) {
+        if (! empty(self::$instance)) {
             foreach (self::$instance as $event) {
                 $experiment = Experiments::firstOrCreate([
                     'experiment' => $event->name,
@@ -102,12 +107,10 @@ class LaravelAb
             }
         }
 
-        return  session()->get(config('laravel-ab.cache_key'));
+        return session()->get(config('laravel-ab.cache_key'));
     }
 
     /**
-     * @param $experiment
-     *
      * @return $this
      *
      * Used to track the name of the experiment
@@ -121,8 +124,6 @@ class LaravelAb
     }
 
     /**
-     * @param $goal
-     *
      * @return string
      *
      * Sets the tracking target for the experiment, and returns one of the conditional elements for display
@@ -156,8 +157,7 @@ class LaravelAb
     }
 
     /**
-     * @param $goal
-     * @param goal $value
+     * @param  goal  $value
      *
      * Insert a simple goal tracker to know if user has reach a milestone
      */
@@ -171,7 +171,6 @@ class LaravelAb
     }
 
     /**
-     * @param $condition
      * @returns void
      *
      * Captures the HTML between AB condtions  and tracks them to their condition name.
@@ -193,8 +192,7 @@ class LaravelAb
     }
 
     /**
-     * @param bool $forceSession
-     *
+     * @param  bool  $forceSession
      * @return mixed
      *
      * Ensuring a user session string on any call for a key to be used.
@@ -203,9 +201,8 @@ class LaravelAb
     {
         return self::$session;
     }
+
     /**
-     * @param $condition
-     * @param $data
      * @returns void
      *
      * A setter for the condition key=>value pairing.
@@ -227,8 +224,6 @@ class LaravelAb
     }
 
     /**
-     * @param $experiment
-     *
      * @return bool
      *
      * Determines if a user has a particular event already in this session

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Instance extends Model
 {
     protected $table = 'ab_instance';
+
     protected $fillable = ['instance', 'metadata', 'identifier'];
 
     public function events()

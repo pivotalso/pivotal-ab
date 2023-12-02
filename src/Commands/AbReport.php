@@ -2,10 +2,10 @@
 
 namespace eighttworules\LaravelAb\Commands;
 
+use eighttworules\LaravelAb\Jobs\GetLists;
+use eighttworules\LaravelAb\Jobs\GetReport;
 use Illuminate\Console\Command;
 
-use eighttworules\LaravelAb\Jobs\GetReport;
-use eighttworules\LaravelAb\Jobs\GetLists;
 class AbReport extends Command
 {
     protected $signature = 'ab:report
@@ -43,7 +43,7 @@ class AbReport extends Command
             return true;
         }
 
-        if (!empty($experiment)) {
+        if (! empty($experiment)) {
             $this->prettyPrint(dispatch_sync(new GetReport($experiment)));
         } else {
             $reports = dispatch_sync(new GetLists());

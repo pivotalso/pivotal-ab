@@ -3,16 +3,14 @@
 namespace eighttworules\LaravelAb\Http\Middleware;
 
 use Closure;
-use Illuminate\Http\Request;
 use eighttworules\LaravelAb\Facades\Ab;
+use Illuminate\Http\Request;
 
 class LaravelAbMiddleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)

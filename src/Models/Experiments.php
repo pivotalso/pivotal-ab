@@ -5,6 +5,7 @@ namespace eighttworules\LaravelAb\Models;
 class Experiments extends \Eloquent
 {
     protected $table = 'ab_experiments';
+
     protected $fillable = ['experiment', 'goal'];
 
     public function events()

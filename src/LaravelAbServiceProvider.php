@@ -2,15 +2,12 @@
 
 namespace eighttworules\LaravelAb;
 
-use Illuminate\Support\Facades\Blade;
-
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
-
-use eighttworules\LaravelAb\LaravelAb;
 use eighttworules\LaravelAb\Commands\AbReport;
 use eighttworules\LaravelAb\Http\Middleware\LaravelAbMiddleware;
+use Illuminate\Support\Facades\Blade;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class LaravelAbServiceProvider extends PackageServiceProvider
 {
@@ -29,16 +26,16 @@ class LaravelAbServiceProvider extends PackageServiceProvider
                 'create_laravel_ab_events_table',
                 'create_laravel_ab_experiments_table',
                 'create_laravel_ab_goal_table',
-                'create_laravel_ab_instance_table'
+                'create_laravel_ab_instance_table',
             ])
             ->hasViews('laravel-ab')
             ->hasRoute('web')
             ->hasCommand(AbReport::class)
-            ->hasInstallCommand(function(InstallCommand $command) {
+            ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
                     ->publishMigrations();
-            });;
+            });
 
     }
 
@@ -54,22 +51,22 @@ class LaravelAbServiceProvider extends PackageServiceProvider
         $this->registerCommands();
     }
 
-//    public function boot(): void
-//    {
-//        parent::boot();
-//        Blade::directive('ab', function (string $expression) {
-//            return sprintf("<H1>hi i'm an ab test %s after</H1>", $expression);
-//        });
-//    }
+    //    public function boot(): void
+    //    {
+    //        parent::boot();
+    //        Blade::directive('ab', function (string $expression) {
+    //            return sprintf("<H1>hi i'm an ab test %s after</H1>", $expression);
+    //        });
+    //    }
 
     public function registerCommands()
     {
 
-//        $this->app->singleton('command.ab.report', function ($app) {
-//            return new AbReport();
-//        });
-//
-//        $this->commands('command.ab.report');
+        //        $this->app->singleton('command.ab.report', function ($app) {
+        //            return new AbReport();
+        //        });
+        //
+        //        $this->commands('command.ab.report');
     }
 
     public function registerCompiler()
