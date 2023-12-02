@@ -59,7 +59,7 @@
                    <div class="w-full">
                        <hr>
                        <div x-show="current" class=" border-gray-200 border-l border-gap-2 p-4">
-                           <div class="flex flex-wrap gap-10">
+                           <div class="flex flex-wrap gap-10" x-if="current">
                                <div class="h-[200] w-[200] bg-gray-50 rounded-lg px-4 pb-6 pt-2 shadow">
                                    <h1>How often shown %</h1>
                                    <hr class="my-2">
@@ -84,6 +84,9 @@
                                </template>
                            </div>
 
+                       </div>
+                       <div x-show="!current" class="text-center">
+                           <h1 class="my-48">Awaiting events</h1>
                        </div>
                    </div>
                </div>
@@ -167,8 +170,13 @@
                 });
             },
             select: function (exp) {
-                this.current = exp;
-                this.renderChart();
+                this.current = false;
+                this.$nextTick(() => {
+                   setTimeout(() => {
+                       this.current = exp;
+                       this.renderChart();
+                   }, 500)
+                });
             },
             experiments: {!! json_encode($experiments) !!},
             @if (!empty($experiments[0]))
