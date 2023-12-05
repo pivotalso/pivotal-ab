@@ -1,6 +1,7 @@
 <?php
 
 namespace eighttworules\LaravelAb\Models;
+use eighttworules\LaravelAb\Events\Track;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,6 +10,14 @@ class Instance extends Model
     protected $table = 'ab_instance';
 
     protected $fillable = ['instance', 'metadata', 'identifier'];
+
+    public static function boot()
+    {
+        parent::boot();
+        self::created(function($model){
+            event(new Track($model));
+        });
+    }
 
     public function events()
     {

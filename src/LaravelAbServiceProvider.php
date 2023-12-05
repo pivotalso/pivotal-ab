@@ -2,15 +2,26 @@
 
 namespace eighttworules\LaravelAb;
 
-use eighttworules\LaravelAb\Commands\AbReport;
-use eighttworules\LaravelAb\Http\Middleware\LaravelAbMiddleware;
 use Illuminate\Support\Facades\Blade;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
+use Illuminate\Support\Facades\Event;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
+
+use eighttworules\LaravelAb\Events\Track;
+use eighttworules\LaravelAb\Commands\AbReport;
+use eighttworules\LaravelAb\Listeners\TrackerLogger;
+use eighttworules\LaravelAb\Http\Middleware\LaravelAbMiddleware;
 
 class LaravelAbServiceProvider extends PackageServiceProvider
 {
+
+    protected $listen = [
+        'eighttworules\LaravelAb\Events\Track' => [
+            'eighttworules\LaravelAb\Listeners\TrackerLogger',
+        ],
+    ];
+
     public function configurePackage(Package $package): void
     {
         /*
@@ -48,7 +59,7 @@ class LaravelAbServiceProvider extends PackageServiceProvider
         $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddleware(LaravelAbMiddleware::class);
         $this->app->bind('Ab', LaravelAb::class);
         $this->registerCompiler();
-        $this->registerCommands();
+        $this->registerEvents();
     }
 
     //    public function boot(): void
@@ -59,14 +70,10 @@ class LaravelAbServiceProvider extends PackageServiceProvider
     //        });
     //    }
 
-    public function registerCommands()
+    public function registerEvents()
     {
+        Event::listen(Track::class, TrackerLogger::class);
 
-        //        $this->app->singleton('command.ab.report', function ($app) {
-        //            return new AbReport();
-        //        });
-        //
-        //        $this->commands('command.ab.report');
     }
 
     public function registerCompiler()
