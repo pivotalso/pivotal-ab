@@ -1,6 +1,7 @@
 <?php
 
 namespace eighttworules\LaravelAb\Models;
+
 use eighttworules\LaravelAb\Events\Track;
 
 class Experiments extends \Eloquent
@@ -12,7 +13,7 @@ class Experiments extends \Eloquent
     public static function boot()
     {
         parent::boot();
-        self::created(function($model){
+        self::created(function ($model) {
             event(new Track($model));
         });
     }

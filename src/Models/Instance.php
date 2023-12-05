@@ -1,8 +1,8 @@
 <?php
 
 namespace eighttworules\LaravelAb\Models;
-use eighttworules\LaravelAb\Events\Track;
 
+use eighttworules\LaravelAb\Events\Track;
 use Illuminate\Database\Eloquent\Model;
 
 class Instance extends Model
@@ -14,7 +14,7 @@ class Instance extends Model
     public static function boot()
     {
         parent::boot();
-        self::created(function($model){
+        self::created(function ($model) {
             event(new Track($model));
         });
     }
