@@ -17,9 +17,7 @@ class Events extends Model
     public static function boot()
     {
         parent::boot();
-        self::created(function($model){
-            Log::info('Event created');
-            Log::info($model);
+        self::created(function ($model) {
             event(new Track($model));
         });
     }

@@ -9,6 +9,7 @@ class Track
     use SerializesModels;
 
     public $model;
+
     /**
      * Create a new event instance.
      */
@@ -16,6 +17,4 @@ class Track
     {
         $this->model = $model;
     }
-
-
 }

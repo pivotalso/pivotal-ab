@@ -2,20 +2,18 @@
 
 namespace eighttworules\LaravelAb;
 
+use eighttworules\LaravelAb\Commands\AbReport;
+use eighttworules\LaravelAb\Events\Track;
+use eighttworules\LaravelAb\Http\Middleware\LaravelAbMiddleware;
+use eighttworules\LaravelAb\Listeners\TrackerLogger;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
-
-use eighttworules\LaravelAb\Events\Track;
-use eighttworules\LaravelAb\Commands\AbReport;
-use eighttworules\LaravelAb\Listeners\TrackerLogger;
-use eighttworules\LaravelAb\Http\Middleware\LaravelAbMiddleware;
 
 class LaravelAbServiceProvider extends PackageServiceProvider
 {
-
     protected $listen = [
         'eighttworules\LaravelAb\Events\Track' => [
             'eighttworules\LaravelAb\Listeners\TrackerLogger',

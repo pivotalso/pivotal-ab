@@ -1,8 +1,8 @@
 <?php
 
 namespace eighttworules\LaravelAb\Models;
-use eighttworules\LaravelAb\Events\Track;
 
+use eighttworules\LaravelAb\Events\Track;
 use Illuminate\Database\Eloquent\Model;
 
 class Instance extends Model
