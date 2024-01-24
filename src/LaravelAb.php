@@ -2,6 +2,7 @@
 
 namespace eighttworules\LaravelAb;
 
+use eighttworules\LaravelAb\Jobs\SendEvents;
 use eighttworules\LaravelAb\Models\Events;
 use eighttworules\LaravelAb\Models\Experiments;
 use eighttworules\LaravelAb\Models\Goal;
@@ -52,6 +53,9 @@ class LaravelAb
         $this->ensureUser(false);
     }
 
+    function __destruct() {
+        dispatch(new SendEvents());
+    }
     public function ensureUser($forceSession = false)
     {
         $key = config('laravel-ab.cache_key');
@@ -95,14 +99,13 @@ class LaravelAb
                     'experiment' => $event->name,
                     'goal' => $event->goal,
                 ]);
-
                 $event = Events::firstOrCreate([
                     'instance_id' => self::$session->id,
+                    'experiments_id'=>$experiment->id,
                     'name' => $event->name,
                     'value' => $event->fired,
                 ]);
-
-                $experiment->events()->save($event);
+                //$experiment->events()->save($event);
                 self::$session->events()->save($event);
             }
         }
@@ -163,7 +166,7 @@ class LaravelAb
      */
     public function goal($goal, $value = null)
     {
-        $goal = Goal::create(['goal' => $goal, 'value' => $value]);
+        $goal = Goal::create([   'instance_id' => self::$session->id, 'goal' => $goal, 'value' => $value]);
 
         self::$session->goals()->save($goal);
 

@@ -14,7 +14,7 @@ class Instance extends Model
     public static function boot()
     {
         parent::boot();
-        self::created(function($model){
+        self::creating(function($model){
             event(new Track($model));
         });
     }

@@ -9,7 +9,9 @@ class Goal extends Model
 {
     protected $table = 'ab_goal';
 
-    protected $fillable = ['goal', 'value'];
+    protected $fillable = ['goal', 'value', 'instance_id'];
+
+    protected $appends = ['instance'];
 
     public static function boot()
     {
@@ -19,6 +21,10 @@ class Goal extends Model
         });
     }
 
+    public function getInstanceAttribute()
+    {
+        return $this->instance()->first()->instance;
+    }
     public function experiment()
     {
         return $this->belongsTo('eighttworules\LaravelAb\Models\Experiment');
