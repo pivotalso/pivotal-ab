@@ -55,6 +55,7 @@ class LaravelAb
 
     public function __destruct()
     {
+        ob_end_clean();
         dispatch(new SendEvents());
     }
 

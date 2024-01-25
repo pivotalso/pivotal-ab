@@ -41,6 +41,9 @@ You can publish the config file with:
 php artisan vendor:publish --tag="ab-config"
 ```
 
+## Documentation
+You can find the documentation for this package at [https://docs.pivotal.so/ab](https://docs.pivotal.so/ab)
+
 ## Usage
 Here is an example use case of a nested A/B test tracking signup and free trial goals
 
@@ -97,6 +100,26 @@ or for example
 You can view reports locally by running the following command
 ```bash
 php artisan ab:report
+```
+a sample output would be
+```bash
+
+{
+    "hero-text": [
+        {
+            "condition": "my website",
+            "hits": 6,
+            "goals": 3,
+            "conversion": 50
+        },
+        {
+            "condition": "welcome user",
+            "hits": 12,
+            "goals": 3,
+            "conversion": 25
+        }
+    ]
+}
 ```
 
 ## Testing
