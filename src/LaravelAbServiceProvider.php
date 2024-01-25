@@ -4,13 +4,15 @@ namespace pivotalso\LaravelAb;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
-use pivotalso\LaravelAb\Commands\AbReport;
-use pivotalso\LaravelAb\Events\Track;
-use pivotalso\LaravelAb\Http\Middleware\LaravelAbMiddleware;
-use pivotalso\LaravelAb\Listeners\TrackerLogger;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+
+use pivotalso\LaravelAb\Events\Track;
+use pivotalso\LaravelAb\Commands\AbReport;
+use pivotalso\LaravelAb\Listeners\TrackerLogger;
+use pivotalso\LaravelAb\Http\Middleware\LaravelAbMiddleware;
+
 
 class LaravelAbServiceProvider extends PackageServiceProvider
 {
@@ -57,7 +59,6 @@ class LaravelAbServiceProvider extends PackageServiceProvider
         $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddleware(LaravelAbMiddleware::class);
         $this->app->bind('Ab', LaravelAb::class);
         $this->registerCompiler();
-        $this->registerEvents();
     }
 
     //    public function boot(): void
@@ -68,11 +69,6 @@ class LaravelAbServiceProvider extends PackageServiceProvider
     //        });
     //    }
 
-    public function registerEvents()
-    {
-        Event::listen(Track::class, TrackerLogger::class);
-
-    }
 
     public function registerCompiler()
     {

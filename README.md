@@ -28,6 +28,28 @@ Add the service provider in `config/app.php`:
     ]),
 ````
 
+If you want to send your events to Pivotal AB, you must configure the library to listen for save events.
+Add the following to your `EventServiceProvider`:
+
+
+```php
+  ....
+  use pivotalso\LaravelAb\Events\Track;
+  use pivotalso\LaravelAb\Listeners\TrackerLogger;
+  
+  class EventServiceProvider extends ServiceProvider {
+       protected $listen = [
+        ...,
+        Track::class => [
+            TrackerLogger::class,
+        ],
+    ];
+```
+as well as add `LARAVEL_AB_API_KEY` to your `.env` file
+You can get your api key from your project settings page on Pivotal AB.
+
+
+```bash
 You can publish and run the migrations with:
 
 ```bash
