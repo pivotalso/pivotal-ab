@@ -1,6 +1,6 @@
 <?php
 
-namespace eighttworules\LaravelAb\Events;
+namespace pivotalso\LaravelAb\Events;
 
 use Illuminate\Queue\SerializesModels;
 

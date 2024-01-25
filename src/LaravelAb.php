@@ -1,12 +1,12 @@
 <?php
 
-namespace eighttworules\LaravelAb;
+namespace pivotalso\LaravelAb;
 
-use eighttworules\LaravelAb\Jobs\SendEvents;
-use eighttworules\LaravelAb\Models\Events;
-use eighttworules\LaravelAb\Models\Experiments;
-use eighttworules\LaravelAb\Models\Goal;
-use eighttworules\LaravelAb\Models\Instance;
+use pivotalso\LaravelAb\Jobs\SendEvents;
+use pivotalso\LaravelAb\Models\Events;
+use pivotalso\LaravelAb\Models\Experiments;
+use pivotalso\LaravelAb\Models\Goal;
+use pivotalso\LaravelAb\Models\Instance;
 use Illuminate\Http\Request;
 
 class LaravelAb

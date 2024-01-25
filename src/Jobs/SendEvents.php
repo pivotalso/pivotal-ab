@@ -1,8 +1,8 @@
 <?php
 
-namespace eighttworules\LaravelAb\Jobs;
+namespace pivotalso\LaravelAb\Jobs;
 
-use eighttworules\LaravelAb\EventQueue;
+use pivotalso\LaravelAb\EventQueue;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use ReflectionClass;

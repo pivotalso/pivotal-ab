@@ -1,9 +1,9 @@
 <?php
 
-namespace eighttworules\LaravelAb\Commands;
+namespace pivotalso\LaravelAb\Commands;
 
-use eighttworules\LaravelAb\Jobs\GetLists;
-use eighttworules\LaravelAb\Jobs\GetReport;
+use pivotalso\LaravelAb\Jobs\GetLists;
+use pivotalso\LaravelAb\Jobs\GetReport;
 use Illuminate\Console\Command;
 
 class AbReport extends Command

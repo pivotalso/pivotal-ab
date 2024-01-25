@@ -1,9 +1,9 @@
 <?php
 
-namespace eighttworules\LaravelAb\Listeners;
+namespace pivotalso\LaravelAb\Listeners;
 
-use eighttworules\LaravelAb\EventQueue;
-use eighttworules\LaravelAb\Events\Track;
+use pivotalso\LaravelAb\EventQueue;
+use pivotalso\LaravelAb\Events\Track;
 
 class TrackerLogger
 {

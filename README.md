@@ -1,4 +1,7 @@
-# Laravel AB by Pivotal
+# Laravel AB by Pivotal (WIP)
+NOTE:: This package is still in development and not ready for production use.
+
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/82rules/laravel-ab/run-tests?label=tests&style=flat-square)](
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/82rules/laravel-ab.svg?style=flat-square)](https://packagist.org/packages/82rules/laravel-ab)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/82rules/laravel-ab/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/82rules/laravel-ab/actions?query=workflow%3Arun-tests+branch%3Amain)

@@ -1,9 +1,9 @@
 <?php
 
-namespace eighttworules\LaravelAb\Http\Middleware;
+namespace pivotalso\LaravelAb\Http\Middleware;
 
 use Closure;
-use eighttworules\LaravelAb\Facades\Ab;
+use pivotalso\LaravelAb\Facades\Ab;
 use Illuminate\Http\Request;
 
 class LaravelAbMiddleware

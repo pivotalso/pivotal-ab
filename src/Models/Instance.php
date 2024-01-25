@@ -1,8 +1,8 @@
 <?php
 
-namespace eighttworules\LaravelAb\Models;
+namespace pivotalso\LaravelAb\Models;
 
-use eighttworules\LaravelAb\Events\Track;
+use pivotalso\LaravelAb\Events\Track;
 use Illuminate\Database\Eloquent\Model;
 
 class Instance extends Model
@@ -21,12 +21,12 @@ class Instance extends Model
 
     public function events()
     {
-        return $this->hasMany('eighttworules\LaravelAb\Models\Events');
+        return $this->hasMany('pivotalso\LaravelAb\Models\Events');
     }
 
     public function goals()
     {
-        return $this->hasMany('eighttworules\LaravelAb\Models\Goal');
+        return $this->hasMany('pivotalso\LaravelAb\Models\Goal');
     }
 
     public function setMetadataAttribute($value)

@@ -5,12 +5,12 @@
         "laravel",
         "laravel-ab"
     ],
-    "homepage": "https://github.com/82rules/laravel-ab",
-    "license": "MIT",
+    "homepage": "https://github.com/pivotalso/laravel-ab",
+    "license": "Proprietary",
     "authors": [
         {
             "name": "Rulian Estivalletti",
-            "email": "rulian@gmail.com",
+            "email": "rulian@yeoldesoftwareco.com",
             "role": "Developer"
         }
     ],
@@ -35,13 +35,13 @@
     },
     "autoload": {
         "psr-4": {
-            "eighttworules\\LaravelAb\\": "src/",
-            "eighttworules\\LaravelAb\\Database\\Factories\\": "database/factories/"
+            "pivotalso\\LaravelAb\\": "src/",
+            "pivotalso\\LaravelAb\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "eighttworules\\LaravelAb\\Tests\\": "tests/",
+            "pivotalso\\LaravelAb\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -73,10 +73,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "eighttworules\\LaravelAb\\LaravelAbServiceProvider"
+                "pivotalso\\LaravelAb\\LaravelAbServiceProvider"
             ],
             "aliases": {
-                "LaravelAb": "eighttworules\\LaravelAb\\Facades\\LaravelAb"
+                "LaravelAb": "pivotalso\\LaravelAb\\Facades\\LaravelAb"
             }
         }
     },

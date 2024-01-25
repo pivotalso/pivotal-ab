@@ -1,6 +1,6 @@
 <?php
 
-namespace eighttworules\LaravelAb;
+namespace pivotalso\LaravelAb;
 
 class EventQueue
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace eighttworules\LaravelAb\Jobs;
+namespace pivotalso\LaravelAb\Jobs;
 
 class GetLists
 {

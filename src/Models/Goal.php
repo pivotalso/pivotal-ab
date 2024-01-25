@@ -1,8 +1,8 @@
 <?php
 
-namespace eighttworules\LaravelAb\Models;
+namespace pivotalso\LaravelAb\Models;
 
-use eighttworules\LaravelAb\Events\Track;
+use pivotalso\LaravelAb\Events\Track;
 use Illuminate\Database\Eloquent\Model;
 
 class Goal extends Model
@@ -24,11 +24,11 @@ class Goal extends Model
     }
     public function experiment()
     {
-        return $this->belongsTo('eighttworules\LaravelAb\Models\Experiment');
+        return $this->belongsTo('pivotalso\LaravelAb\Models\Experiment');
     }
 
     public function instance()
     {
-        return $this->belongsTo('eighttworules\LaravelAb\Models\Instance');
+        return $this->belongsTo('pivotalso\LaravelAb\Models\Instance');
     }
 }
