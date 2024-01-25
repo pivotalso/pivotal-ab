@@ -10,7 +10,8 @@ class TrackerLogger
     /**
      * Handle the event.
      */
-    public function handle(Track $track) {
+    public function handle(Track $track)
+    {
         EventQueue::addEvent($track);
     }
 }

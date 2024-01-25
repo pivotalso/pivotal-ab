@@ -2,9 +2,9 @@
 
 namespace pivotalso\LaravelAb\Commands;
 
+use Illuminate\Console\Command;
 use pivotalso\LaravelAb\Jobs\GetLists;
 use pivotalso\LaravelAb\Jobs\GetReport;
-use Illuminate\Console\Command;
 
 class AbReport extends Command
 {

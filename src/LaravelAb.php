@@ -2,18 +2,18 @@
 
 namespace pivotalso\LaravelAb;
 
+use Illuminate\Http\Request;
 use pivotalso\LaravelAb\Jobs\SendEvents;
 use pivotalso\LaravelAb\Models\Events;
 use pivotalso\LaravelAb\Models\Experiments;
 use pivotalso\LaravelAb\Models\Goal;
 use pivotalso\LaravelAb\Models\Instance;
-use Illuminate\Http\Request;
 
 class LaravelAb
 {
     /**
      * @var static
-     * Instance Object to identify user's session
+     *             Instance Object to identify user's session
      */
     protected static $session;
 
@@ -53,9 +53,11 @@ class LaravelAb
         $this->ensureUser(false);
     }
 
-    function __destruct() {
+    public function __destruct()
+    {
         dispatch(new SendEvents());
     }
+
     public function ensureUser($forceSession = false)
     {
         $key = config('laravel-ab.cache_key');
@@ -75,8 +77,8 @@ class LaravelAb
 
     /**
      * @param  array  $session_variables
-     *                                 Load initial session variables to store or track
-     *                                 Such as variables you want to track being passed into the template.
+     *                                    Load initial session variables to store or track
+     *                                    Such as variables you want to track being passed into the template.
      */
     public function setup(array $session_variables = [])
     {
@@ -101,7 +103,7 @@ class LaravelAb
                 ]);
                 $event = Events::firstOrCreate([
                     'instance_id' => self::$session->id,
-                    'experiments_id'=>$experiment->id,
+                    'experiments_id' => $experiment->id,
                     'name' => $event->name,
                     'value' => $event->fired,
                 ]);
@@ -166,7 +168,7 @@ class LaravelAb
      */
     public function goal($goal, $value = null)
     {
-        $goal = Goal::create([   'instance_id' => self::$session->id, 'goal' => $goal, 'value' => $value]);
+        $goal = Goal::create(['instance_id' => self::$session->id, 'goal' => $goal, 'value' => $value]);
 
         self::$session->goals()->save($goal);
 
@@ -216,8 +218,8 @@ class LaravelAb
     }
 
     /**
-     * @param $experiment
-     * @param $condition
+     * @param  $experiment
+     * @param  $condition
      *
      * Tracks at an instance level which event was selected for the session
      */

@@ -4,14 +4,13 @@ namespace pivotalso\LaravelAb;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
+use pivotalso\LaravelAb\Commands\AbReport;
+use pivotalso\LaravelAb\Events\Track;
+use pivotalso\LaravelAb\Http\Middleware\LaravelAbMiddleware;
+use pivotalso\LaravelAb\Listeners\TrackerLogger;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
-
-use pivotalso\LaravelAb\Events\Track;
-use pivotalso\LaravelAb\Commands\AbReport;
-use pivotalso\LaravelAb\Listeners\TrackerLogger;
-use pivotalso\LaravelAb\Http\Middleware\LaravelAbMiddleware;
 
 class LaravelAbServiceProvider extends PackageServiceProvider
 {

@@ -2,9 +2,8 @@
 
 namespace pivotalso\LaravelAb\Models;
 
-use pivotalso\LaravelAb\Events\Track;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
+use pivotalso\LaravelAb\Events\Track;
 
 class Events extends Model
 {
@@ -13,7 +12,9 @@ class Events extends Model
     protected $fillable = ['name', 'value', 'instance_id', 'experiments_id'];
 
     protected $touches = ['instance'];
+
     protected $appends = ['instance'];
+
     public static function boot()
     {
         parent::boot();
@@ -21,11 +22,14 @@ class Events extends Model
             event(new Track($model));
         });
     }
+
     public function getInstanceAttribute()
     {
-        $instance =  $this->instance()->first();
-        return !empty($instance) ? $instance->instance : null;
+        $instance = $this->instance()->first();
+
+        return ! empty($instance) ? $instance->instance : null;
     }
+
     public function experiment()
     {
         return $this->belongsTo('pivotalso\LaravelAb\Models\Experiment');
