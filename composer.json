@@ -1,5 +1,5 @@
 {
-    "name": "82rules/laravel-ab",
+    "name": "pivotalso/laravel-ab",
     "description": "Blade A/B testing for Laravel",
     "keywords": [
         "laravel",
