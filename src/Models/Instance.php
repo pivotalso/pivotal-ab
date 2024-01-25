@@ -2,8 +2,8 @@
 
 namespace pivotalso\LaravelAb\Models;
 
-use pivotalso\LaravelAb\Events\Track;
 use Illuminate\Database\Eloquent\Model;
+use pivotalso\LaravelAb\Events\Track;
 
 class Instance extends Model
 {
@@ -14,7 +14,7 @@ class Instance extends Model
     public static function boot()
     {
         parent::boot();
-        self::creating(function($model){
+        self::creating(function ($model) {
             event(new Track($model));
         });
     }

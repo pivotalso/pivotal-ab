@@ -6,10 +6,9 @@ class EventQueue
 {
     /**
      * @var static
-     * Instance Object to identify user's session
+     *             Instance Object to identify user's session
      */
     protected static $events = [];
-
 
     public static function addEvent($event)
     {

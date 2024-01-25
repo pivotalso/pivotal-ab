@@ -3,8 +3,8 @@
 namespace pivotalso\LaravelAb\Http\Middleware;
 
 use Closure;
-use pivotalso\LaravelAb\Facades\Ab;
 use Illuminate\Http\Request;
+use pivotalso\LaravelAb\Facades\Ab;
 
 class LaravelAbMiddleware
 {

@@ -2,14 +2,17 @@
 
 namespace pivotalso\LaravelAb\Models;
 
-use pivotalso\LaravelAb\Events\Track;
 use Illuminate\Database\Eloquent\Model;
+use pivotalso\LaravelAb\Events\Track;
 
 class Goal extends Model
 {
     protected $table = 'ab_goal';
+
     protected $fillable = ['goal', 'value', 'instance_id'];
+
     protected $appends = ['instance'];
+
     public static function boot()
     {
         parent::boot();
@@ -22,6 +25,7 @@ class Goal extends Model
     {
         return $this->instance()->first()->instance;
     }
+
     public function experiment()
     {
         return $this->belongsTo('pivotalso\LaravelAb\Models\Experiment');

@@ -7,6 +7,7 @@ use pivotalso\LaravelAb\Events\Track;
 class Experiments extends \Eloquent
 {
     protected $table = 'ab_experiments';
+
     protected $fillable = ['experiment', 'goal'];
 
     public static function boot()
