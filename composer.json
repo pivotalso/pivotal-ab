@@ -6,7 +6,7 @@
         "laravel-ab"
     ],
     "homepage": "https://github.com/pivotalso/laravel-ab",
-    "license": "Proprietary",
+    "license": "proprietary",
     "authors": [
         {
             "name": "Rulian Estivalletti",
