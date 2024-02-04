@@ -151,7 +151,8 @@ class LaravelAb
             $conditions = array_keys($this->conditions);
         }
         /// has the user fired this particular experiment yet?
-        if ($fired = $this->hasExperiment($this->name)) {
+        $fired = $this->hasExperiment($this->name);
+        if (!empty($fired) && $this->conditions[$this->fired]) {
             $this->fired = $fired;
         } else {
             shuffle($conditions);
@@ -166,7 +167,7 @@ class LaravelAb
      *
      * Insert a simple goal tracker to know if user has reach a milestone
      */
-    public function goal($goal, $value = null)
+    public static function goal($goal, $value = null)
     {
         $goal = Goal::create(['instance_id' => self::$session->id, 'goal' => $goal, 'value' => $value]);
 

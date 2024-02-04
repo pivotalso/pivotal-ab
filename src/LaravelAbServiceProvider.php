@@ -95,7 +95,7 @@ class LaravelAbServiceProvider extends PackageServiceProvider
                 }
             }
 
-            $view = preg_replace('/@goal\(([^\)]+)\)/i', "<?php App::make('Ab')->goal($1); ?>", $view);
+            $view = preg_replace('/@goal\(([^\)]+)\)/i', "<?php App::make('Ab')::goal($1); ?>", $view);
 
             return $view;
         });
