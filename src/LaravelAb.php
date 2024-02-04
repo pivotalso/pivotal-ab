@@ -152,7 +152,7 @@ class LaravelAb
         }
         /// has the user fired this particular experiment yet?
         $fired = $this->hasExperiment($this->name);
-        if (!empty($fired) && $this->conditions[$this->fired]) {
+        if (!empty($fired) && !empty($this->conditions[$this->fired])) {
             $this->fired = $fired;
         } else {
             shuffle($conditions);
