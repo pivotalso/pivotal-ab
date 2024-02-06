@@ -57,6 +57,7 @@ class LaravelAb
 
     public function __destruct()
     {
+        Log::debug('destruct');
         dispatch(new SendEvents());
     }
 

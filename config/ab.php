@@ -1,6 +1,5 @@
 <?php
 
-// config for eighttworules/LaravelAb
 return [
     'cache_key' => 'laravel_ab_user',
     'api_key' => env('LARAVEL_AB_API_KEY', ''),
