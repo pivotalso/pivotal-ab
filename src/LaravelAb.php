@@ -3,6 +3,7 @@
 namespace pivotalso\LaravelAb;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use pivotalso\LaravelAb\Jobs\SendEvents;
 use pivotalso\LaravelAb\Models\Events;
 use pivotalso\LaravelAb\Models\Experiments;
@@ -152,7 +153,7 @@ class LaravelAb
         }
         /// has the user fired this particular experiment yet?
         $fired = $this->hasExperiment($this->name);
-        if (!empty($fired) && !empty($this->conditions[$this->fired])) {
+        if (!empty($fired) && !empty($this->conditions[$fired])) {
             $this->fired = $fired;
         } else {
             shuffle($conditions);
