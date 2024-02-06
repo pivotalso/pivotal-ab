@@ -2,6 +2,8 @@
 
 namespace pivotalso\LaravelAb;
 
+use Illuminate\Support\Facades\Log;
+
 class EventQueue
 {
     /**
@@ -12,6 +14,8 @@ class EventQueue
 
     public static function addEvent($event)
     {
+        Log::debug('EventQueue::addEvent');
+        Log::debug($event);
         self::$events = [...self::$events, $event];
     }
 

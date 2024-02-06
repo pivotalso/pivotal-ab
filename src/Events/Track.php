@@ -3,6 +3,7 @@
 namespace pivotalso\LaravelAb\Events;
 
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class Track
 {
@@ -15,6 +16,7 @@ class Track
      */
     public function __construct($model)
     {
+        Log::debug('Track::construct');
         $this->model = $model;
     }
 }
