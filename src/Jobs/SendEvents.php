@@ -23,9 +23,14 @@ class SendEvents implements ShouldQueue
         $events = [];
         $queue = EventQueue::getEvents();
         Log::debug('Sending events to API');
-        Log::debug($key, $host);
-        Log::debug($queue);
+        Log::debug('key');
+        Log::debug($key);
+        Log::debug('host');
+        Log::debug($host);
+        Log::debug('queue');
+        Log::debug(json_encode($queue));
         if (! empty($key) && ! empty($host) && count($queue) > 0) {
+            Log::debug('sneding');
             foreach ($queue as $event) {
                 $reflect = new ReflectionClass($event->model);
                 $data = $event->model->toArray();
