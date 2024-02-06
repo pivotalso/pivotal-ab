@@ -3,6 +3,7 @@
 namespace pivotalso\LaravelAb;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
 use pivotalso\LaravelAb\Jobs\SendEvents;
 use pivotalso\LaravelAb\Models\Events;
@@ -59,18 +60,32 @@ class LaravelAb
         dispatch(new SendEvents());
     }
 
+    public static function initUser($request)
+    {
+        self::ensureSession($request);
+    }
+
     public function ensureUser($forceSession = false)
     {
+        self::ensureSession($this->request, $forceSession);
+
+    }
+
+    public static function ensureSession($request,  $forceSession = false) {
         $key = config('laravel-ab.cache_key');
-        $uid = session()->get($key, md5(uniqid().$this->request->getClientIp()));
-        if (! session()->has($key) || $forceSession) {
-            $this->request->cookie(config('laravel-ab.cache_key'), $uid);
+        $uid = session()->get($key);
+        if (empty($uid)) {
+            $uid = Cookie::get($key);
+        }
+        if (empty($uid)) {
+            $uid = md5(uniqid().$request->getClientIp());
             session()->put($key, $uid);
+            Cookie::make($key, $uid, 60 * 24 * 365 * 10);
         }
         if (empty(self::$session)) {
             self::$session = Instance::firstOrCreate([
                 'instance' => $uid,
-                'identifier' => $this->request->getClientIp(),
+                'identifier' => $request->getClientIp(),
                 'metadata' => (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : null),
             ]);
         }
@@ -170,11 +185,13 @@ class LaravelAb
      */
     public static function goal($goal, $value = null)
     {
-        $goal = Goal::create(['instance_id' => self::$session->id, 'goal' => $goal, 'value' => $value]);
+        if (!empty(self::$session)) {
+            $goal = Goal::create(['instance_id' => self::$session->id, 'goal' => $goal, 'value' => $value]);
 
-        self::$session->goals()->save($goal);
+            self::$session->goals()->save($goal);
 
-        return $goal;
+            return $goal;
+        }
     }
 
     /**
