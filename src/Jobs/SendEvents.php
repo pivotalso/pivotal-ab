@@ -22,15 +22,7 @@ class SendEvents implements ShouldQueue
         $host = config('laravel-ab.api_url');
         $events = [];
         $queue = EventQueue::getEvents();
-        Log::debug('Sending events to API');
-        Log::debug('key');
-        Log::debug($key);
-        Log::debug('host');
-        Log::debug($host);
-        Log::debug('queue');
-        Log::debug(json_encode($queue));
         if (! empty($key) && ! empty($host) && count($queue) > 0) {
-            Log::debug('sneding');
             foreach ($queue as $event) {
                 $reflect = new ReflectionClass($event->model);
                 $data = $event->model->toArray();
@@ -48,11 +40,9 @@ class SendEvents implements ShouldQueue
                     ],
                 ]);
                 $url = sprintf('%s/%s', $host, $this->url);
-                $response = $client->request('POST', $url, [
+                $client->request('POST', $url, [
                     'body' => json_encode($events),
                 ]);
-                Log::debug('API response');
-                Log::debug($response->getBody());
                 EventQueue::clearEvents();
             } catch (\Exception $e) {
                 \Log::debug('Unable to send AB test data to API, please check the following erro');
