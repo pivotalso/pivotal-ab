@@ -55,11 +55,6 @@ class LaravelAb
         $this->ensureUser(false);
     }
 
-    public function __destruct()
-    {
-        dispatch(new SendEvents());
-    }
-
     public static function initUser($request)
     {
         self::ensureSession($request);
@@ -123,11 +118,10 @@ class LaravelAb
                     'name' => $event->name,
                     'value' => $event->fired,
                 ]);
-                //$experiment->events()->save($event);
                 self::$session->events()->save($event);
             }
         }
-
+        dispatch(new SendEvents());
         return session()->get(config('laravel-ab.cache_key'));
     }
 

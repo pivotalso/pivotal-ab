@@ -16,6 +16,7 @@ class Track
      */
     public function __construct($model)
     {
+        Log::debug('Track::construct');
         $this->model = $model;
     }
 }

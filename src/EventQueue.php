@@ -14,6 +14,8 @@ class EventQueue
 
     public static function addEvent($event)
     {
+        Log::debug('EventQueue::addEvent');
+        Log::debug(json_encode($event));
         self::$events = [...self::$events, $event];
     }
 
