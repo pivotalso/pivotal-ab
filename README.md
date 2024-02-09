@@ -1,13 +1,6 @@
 # Laravel AB by Pivotal (WIP)
 NOTE:: This package is still in development and not ready for production use.
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/82rules/laravel-ab/run-tests?label=tests&style=flat-square)](
-
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/82rules/laravel-ab.svg?style=flat-square)](https://packagist.org/packages/82rules/laravel-ab)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/82rules/laravel-ab/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/82rules/laravel-ab/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/82rules/laravel-ab/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/82rules/laravel-ab/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/82rules/laravel-ab.svg?style=flat-square)](https://packagist.org/packages/82rules/laravel-ab)
-
 Laravel A/B by Pivotal is a package to help you create and manage A/B tests 
 on your laravel blade templates. It also provides a way to generate and view reports 
 locally or by integration into Pivotal AB services.
