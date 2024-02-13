@@ -1,5 +1,5 @@
 <?php
 
-use eighttworules\LaravelAb\Tests\TestCase;
+use pivotalso\LaravelAb\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
