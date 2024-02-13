@@ -1,6 +1,8 @@
 # Laravel AB by Pivotal (WIP)
 NOTE:: This package is still in development and not ready for production use.
 
+![example workflow](https://github.com/pivotalso/laravel-ab/actions/workflows/tests.yml/badge.svg)
+
 Laravel A/B by Pivotal is a package to help you create and manage A/B tests 
 on your laravel blade templates. It also provides a way to generate and view reports 
 locally or by integration into Pivotal AB services.
