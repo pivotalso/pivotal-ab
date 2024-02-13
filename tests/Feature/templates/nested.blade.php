@@ -13,5 +13,11 @@
                  Test-2-Option-2
               @track('test-2-goal')
         @track('test-2-goal')
+        @ab('test-3')
+            @condition('option-2-1')
+                 Test-3-Option-1
+            @condition('option-2-2')
+                Test-3-Option-2
+        @track('test-3-goal')
     </body>
 </html>

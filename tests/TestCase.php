@@ -2,6 +2,8 @@
 
 namespace pivotalso\LaravelAb\Tests;
 
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Route;
 use pivotalso\LaravelAb\LaravelAbServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -15,6 +17,7 @@ class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'pivotalso\\LaravelAb\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
+
     }
 
     protected function getPackageProviders($app)
@@ -26,11 +29,21 @@ class TestCase extends Orchestra
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        config()->set('database.default', 'sqlite');
+        $dbPath = __DIR__.'/db.sqlite';
+        if (file_exists($dbPath)) {
+            unlink($dbPath);
+        }
+        touch($dbPath);
+        config()->set('database.connections.sqlite.database', $dbPath);
+        foreach([
+            'create_laravel_ab_events_table.php',
+            'create_laravel_ab_experiments_table.php',
+            'create_laravel_ab_goal_table.php',
+            'create_laravel_ab_instance_table.php'] as $filepath) {
+            $migration = include sprintf(__DIR__.'/../database/migrations/%s.stub', $filepath);
+            $migration->up();
+        }
 
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_laravel-ab_table.php.stub';
-        $migration->up();
-        */
     }
 }
