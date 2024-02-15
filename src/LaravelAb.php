@@ -5,6 +5,7 @@ namespace pivotalso\LaravelAb;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use pivotalso\LaravelAb\Jobs\SendEvents;
 use pivotalso\LaravelAb\Models\Events;
 use pivotalso\LaravelAb\Models\Experiments;
@@ -27,6 +28,8 @@ class LaravelAb
      */
     protected static $instance = [];
 
+    protected static $events = [];
+
     /*
      * Individual Test Parameters
      */
@@ -38,66 +41,42 @@ class LaravelAb
 
     protected $goal;
 
-    protected $metadata_callback;
-
-    /**
-     * @var Request
-     */
-    private $request;
-
-    /**
-     * Create a instance for a user session if there isnt once.
-     * Load previous event -> fire pairings for this session if exist.
-     */
-    public function __construct(Request $request)
+    public function __construct()
     {
-        $this->request = $request;
-        $this->ensureUser(false);
+        self::initUser();
     }
 
-    public static function initUser($request)
+    public static function initUser(Request $request = null)
     {
-        self::ensureSession($request);
-    }
-
-    public function ensureUser($forceSession = false)
-    {
-        self::ensureSession($this->request, $forceSession);
-
-    }
-
-    public static function ensureSession($request,  $forceSession = false) {
-        $key = config('laravel-ab.cache_key');
-        $uid = session()->get($key);
-        if (empty($uid)) {
-            $uid = Cookie::get($key);
-        }
-        if (empty($uid)) {
-            $uid = md5(uniqid().$request->getClientIp());
-            session()->put($key, $uid);
-            Cookie::make($key, $uid, 60 * 24 * 365 * 10);
-        }
         if (empty(self::$session)) {
-            self::$session = Instance::firstOrCreate([
-                'instance' => $uid,
-                'identifier' => $request->getClientIp(),
-                'metadata' => (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : null),
-            ]);
-        }
-    }
+            $key = config('laravel-ab.cache_key');
+            $uid = session()->get($key);
+            $client = Str::random(12);
+            if (!empty($request)) {
+                $client = $request->getClientIp();
+            }
+            if (empty($uid)) {
+                $uid = Cookie::get($key);
+            }
+            if (empty($uid)) {
+                $uid = md5(uniqid().$client);
+                session()->put($key, $uid);
+            }
+            if (empty(self::$session)) {
+                self::$session = Instance::firstOrCreate(
+                    [
+                        'instance' => $uid
+                    ],
+                    [
+                    'instance' => $uid,
+                    'identifier' => $client,
+                    'metadata' => (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : null),
+                    ]
+                );
+            }
 
-    /**
-     * @param  array  $session_variables
-     *                                    Load initial session variables to store or track
-     *                                    Such as variables you want to track being passed into the template.
-     */
-    public function setup(array $session_variables = [])
-    {
-        foreach ($session_variables as $key => $value) {
-            $experiment = new self();
-            $experiment->experiment($key);
-            $experiment->fired = $value;
-            $experiment->instanceEvent();
+            self::$events =  self::$session->events()->get();
+            Cookie::make($key, $uid, 60 * 24 * 365 * 10);
         }
     }
 
@@ -133,8 +112,7 @@ class LaravelAb
     public function experiment($experiment)
     {
         $this->name = $experiment;
-        $this->instanceEvent();
-
+        self::$instance[$experiment] = $this;
         return $this;
     }
 
@@ -209,12 +187,7 @@ class LaravelAb
         });
     }
 
-    /**
-     * @param  bool  $forceSession
-     * @return mixed
-     *
-     * Ensuring a user session string on any call for a key to be used.
-     */
+
     public static function getSession()
     {
         return self::$session;
@@ -248,13 +221,11 @@ class LaravelAb
      */
     public function hasExperiment($experiment)
     {
-        $session_events = self::$session->events()->get();
-        foreach ($session_events as $event) {
-            if ($event->name == $experiment) {
-                return $event->value;
+        foreach(self::$events as $session_events) {
+            if ($session_events->name == $experiment) {
+                return $session_events->value;
             }
         }
-
         return false;
     }
 
