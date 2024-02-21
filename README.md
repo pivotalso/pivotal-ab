@@ -92,8 +92,9 @@ class PagesController extends Controller
 {
     public function welcome()
     {
-       $option =  Ab::choice('kind of homepage', ['control', 'variant'])->track('go-to-ab');
-       if ($option === 'control') {
+       $option =  
+       Ab::choice('kind of homepage', ['control', 'variant'])->track('go-to-ab');
+       if ($option === 'variant') {
            return view('variant-welcome');
         }
        return view('welcome');
