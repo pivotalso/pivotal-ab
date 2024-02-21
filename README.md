@@ -86,6 +86,19 @@ Here is an example use case of a nested A/B test tracking signup and free trial 
     </body>
 </html
 ```
+You can also easily test logic within you Controllers
+```bash 
+class PagesController extends Controller
+{
+    public function welcome()
+    {
+       $option =  Ab::choice('kind of homepage', ['control', 'variant'])->track('go-to-ab');
+       if ($option === 'control') {
+           return view('variant-welcome');
+        }
+       return view('welcome');
+    }
+```
 
 You can either track goals in views or within your application logic.
 ``` register.blade.php```
