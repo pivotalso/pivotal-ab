@@ -117,7 +117,9 @@ class LaravelAb
     {
         $this->goal = $goal;
 
-        ob_end_clean();
+        if (ob_get_level()) {
+            ob_end_clean();
+        }
 
         $conditions = [];
         foreach ($this->conditions as $key => $condition) {
@@ -219,6 +221,16 @@ class LaravelAb
             }
         }
         return false;
+    }
+
+    public static function choice($experiment, $conditions)
+    {
+        $ab = new self();
+        $ab->experiment($experiment);
+        foreach ($conditions as $condition) {
+            $ab->conditions[$condition] = $condition;
+        }
+        return $ab;
     }
 
     /**
