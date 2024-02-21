@@ -41,15 +41,11 @@ class LaravelAb
 
     protected $goal;
 
-    public function __construct()
-    {
-        self::initUser();
-    }
 
     public static function initUser(Request $request = null)
     {
+        $key = config('laravel-ab.cache_key');
         if (empty(self::$session)) {
-            $key = config('laravel-ab.cache_key');
             $uid = session()->get($key);
             $client = Str::random(12);
             if (!empty($request)) {
@@ -60,23 +56,19 @@ class LaravelAb
             }
             if (empty($uid)) {
                 $uid = md5(uniqid().$client);
-                session()->put($key, $uid);
             }
-            if (empty(self::$session)) {
-                self::$session = Instance::firstOrCreate(
-                    [
-                        'instance' => $uid
-                    ],
-                    [
-                    'instance' => $uid,
-                    'identifier' => $client,
-                    'metadata' => (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : null),
-                    ]
-                );
-            }
-
+            session()->put($key, $uid);
+            self::$session = Instance::firstOrCreate(
+                [
+                    'instance' => $uid
+                ],
+                [
+                'instance' => $uid,
+                'identifier' => $client,
+                'metadata' => (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : null),
+                ]
+            );
             self::$events =  self::$session->events()->get();
-            Cookie::make($key, $uid, 60 * 24 * 365 * 10);
         }
     }
 
