@@ -16,6 +16,7 @@ class LaravelAbMiddleware
     public function handle(Request $request, Closure $next)
     {
         Ab::initUser($request);
+
         $response = $next($request);
 
         $cookie = Ab::saveSession();
