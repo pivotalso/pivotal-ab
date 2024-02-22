@@ -45,11 +45,18 @@ class LaravelAb
     public static function initUser(Request $request = null)
     {
         $key = config('laravel-ab.cache_key');
+        $param_key = config('laravel-ab.request_param');
         if (empty(self::$session)) {
-            $uid = session()->get($key);
             $client = Str::random(12);
             if (!empty($request)) {
                 $client = $request->getClientIp();
+            }
+            $uid = null;
+            if (config('laravel-ab.allow_param') && !empty($request)) {
+                $uid = $request->get($param_key);
+            }
+            if (empty($uid)) {
+                $uid = session()->get($key);
             }
             if (empty($uid)) {
                 $uid = Cookie::get($key);
@@ -57,6 +64,7 @@ class LaravelAb
             if (empty($uid)) {
                 $uid = md5(uniqid().$client);
             }
+
             session()->put($key, $uid);
             self::$session = Instance::firstOrCreate(
                 [
