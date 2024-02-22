@@ -11,6 +11,10 @@ class Goal extends Model
 
     protected $fillable = ['goal', 'value', 'instance_id'];
 
+    protected $casts = [
+        'value' => 'array',
+    ];
+
     protected $appends = ['instance'];
 
     public static function boot()

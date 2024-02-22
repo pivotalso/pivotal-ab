@@ -11,6 +11,7 @@ use pivotalso\LaravelAb\Models\Events;
 use pivotalso\LaravelAb\Models\Experiments;
 use pivotalso\LaravelAb\Models\Goal;
 use pivotalso\LaravelAb\Models\Instance;
+use stdClass;
 
 class LaravelAb
 {
@@ -272,5 +273,17 @@ class LaravelAb
     {
         self::$session = false;
         self::$instance = null;
+    }
+
+    public static function sendEvent($event, $payload)
+    {
+        $track = new StdClass;
+        $model = new Goal();
+        $model->goal = $event;
+        $model->value = $payload;
+        $model->instance_id = self::$session->id;
+        $model->instance = self::$session->instance;
+        $track->model = $model;
+        EventQueue::addEvent($track);
     }
 }

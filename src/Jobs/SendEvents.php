@@ -2,11 +2,12 @@
 
 namespace pivotalso\LaravelAb\Jobs;
 
+use Log;
+use ReflectionClass;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Log;
+
 use pivotalso\LaravelAb\EventQueue;
-use ReflectionClass;
 
 class SendEvents implements ShouldQueue
 {
@@ -22,20 +23,13 @@ class SendEvents implements ShouldQueue
         $host = env('LARAVEL_AB_API_URL', 'https://ab.yosc.xyz'); // TODO - change before launch
         $events = [];
         $queue = EventQueue::getEvents();
-        Log::debug('Sending events to API');
-        Log::debug('key');
-        Log::debug($key);
-        Log::debug('host');
-        Log::debug($host);
-        Log::debug('queue');
-        Log::debug(json_encode($queue));
         if (! empty($key) && ! empty($host) && count($queue) > 0) {
-            Log::debug('sneding');
             foreach ($queue as $event) {
                 $reflect = new ReflectionClass($event->model);
                 $data = $event->model->toArray();
+                $type = !empty($event->type) ? $event->type : $reflect->getShortName();
                 $events[] = [
-                    'type' => $reflect->getShortName(),
+                    'type' => $type,
                     'payload' => $data,
                 ];
             }
@@ -48,15 +42,14 @@ class SendEvents implements ShouldQueue
                     ],
                 ]);
                 $url = sprintf('%s/%s', $host, $this->url);
-                $response = $client->request('POST', $url, [
+                $client->request('POST', $url, [
                     'body' => json_encode($events),
                 ]);
-                Log::debug('API response');
-                Log::debug($response->getBody());
+                Log::info('Event sent to API successfully');
                 EventQueue::clearEvents();
             } catch (\Exception $e) {
-                \Log::debug('Unable to send AB test data to API, please check the following erro');
-                \Log::error($e->getMessage());
+                Log::debug('Unable to send AB test data to API, please check the following error');
+                Log::error($e->getMessage());
             }
 
         }
