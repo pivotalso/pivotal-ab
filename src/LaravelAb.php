@@ -108,6 +108,7 @@ class LaravelAb
 
     public function selectOption($option) {
         $this->fired = $option;
+        return $this;
     }
     /**
      * @return $this
