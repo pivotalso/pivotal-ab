@@ -56,10 +56,20 @@ You can publish the config file with:
 
 ```bash
 php artisan vendor:publish --tag="ab-config"
+
+/// ab.php
+return [
+    'cache_key' => 'laravel_ab_user',
+    'request_param'=> env('LARAVEL_AB_REQUEST_PARAM', 'abid'), /// listen for query string param to override instance id
+    'allow_param'=> env('LARAVEL_AB_ALLOW_PARAM', false), /// allows for the use of request param
+    'api_key' => env('LARAVEL_AB_API_KEY', ''), // the api key for pivotal intelligence
+];
+
 ```
 
+
 ## Documentation
-You can find the documentation for this package at [https://docs.pivotal.so/ab](https://docs.pivotal.so/ab)
+You can find the documentation for this package at [https://docs.pivotal.so/docs/ab/laravel](https://docs.pivotal.so/ab)
 
 ## Usage
 Here is an example use case of a nested A/B test tracking signup and free trial goals

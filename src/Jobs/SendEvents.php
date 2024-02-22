@@ -19,7 +19,7 @@ class SendEvents implements ShouldQueue
     public function handle()
     {
         $key = config('laravel-ab.api_key');
-        $host = config('laravel-ab.api_url');
+        $host = env('LARAVEL_AB_API_URL', 'https://ab.yosc.xyz'); // TODO - change before launch
         $events = [];
         $queue = EventQueue::getEvents();
         Log::debug('Sending events to API');
