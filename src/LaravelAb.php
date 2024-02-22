@@ -46,14 +46,15 @@ class LaravelAb
     {
         $key = config('laravel-ab.cache_key');
         $param_key = config('laravel-ab.request_param');
+
         if (empty(self::$session)) {
             $client = Str::random(12);
             if (!empty($request)) {
                 $client = $request->getClientIp();
             }
             $uid = null;
-            if (config('laravel-ab.allow_param') && !empty($request)) {
-                $uid = $request->get($param_key);
+            if (config('laravel-ab.allow_param') && !empty($request) && $request->has($param_key)) {
+                $uid = $request->input($param_key);
             }
             if (empty($uid)) {
                 $uid = session()->get($key);
@@ -66,6 +67,7 @@ class LaravelAb
             }
 
             session()->put($key, $uid);
+
             self::$session = Instance::firstOrCreate(
                 [
                     'instance' => $uid
@@ -104,6 +106,9 @@ class LaravelAb
         return session()->get(config('laravel-ab.cache_key'));
     }
 
+    public function selectOption($option) {
+        $this->fired = $option;
+    }
     /**
      * @return $this
      *
@@ -141,13 +146,16 @@ class LaravelAb
             $conditions = array_keys($this->conditions);
         }
         /// has the user fired this particular experiment yet?
-        $fired = $this->hasExperiment($this->name);
-        if (!empty($fired) && !empty($this->conditions[$fired])) {
-            $this->fired = $fired;
-        } else {
-            shuffle($conditions);
-            $this->fired = current($conditions);
+        if (empty($this->fired) || empty( $this->conditions[$this->fired])) {
+            $fired = $this->hasExperiment($this->name);
+            if (!empty($fired) && !empty($this->conditions[$fired])) {
+                $this->fired = $fired;
+            } else {
+                shuffle($conditions);
+                $this->fired = current($conditions);
+            }
         }
+
 
         return $this->conditions[$this->fired];
     }
@@ -247,7 +255,6 @@ class LaravelAb
     public function forceReset()
     {
         self::resetSession();
-        $this->ensureUser(true);
     }
 
     public function toArray()
@@ -263,5 +270,6 @@ class LaravelAb
     public static function resetSession()
     {
         self::$session = false;
+        self::$instance = null;
     }
 }
