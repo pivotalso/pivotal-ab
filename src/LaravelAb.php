@@ -45,7 +45,6 @@ class LaravelAb
 
     public static function initUser(Request $request = null)
     {
-        Log::debug("initUser fired");
         $key = config('laravel-ab.cache_key');
         $param_key = config('laravel-ab.request_param');
 
@@ -89,7 +88,6 @@ class LaravelAb
      */
     public static function saveSession()
     {
-        Log::debug("savedSession fired");
         if (! empty(self::$instance)) {
             foreach (self::$instance as $event) {
                 $experiment = Experiments::firstOrCreate([
@@ -105,7 +103,6 @@ class LaravelAb
                 self::$session->events()->save($event);
             }
         }
-        Log::debug("dispatchign sendEvents");
         dispatch(new SendEvents());
         return session()->get(config('laravel-ab.cache_key'));
     }

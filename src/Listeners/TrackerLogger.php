@@ -13,8 +13,6 @@ class TrackerLogger
      */
     public function handle(Track $track)
     {
-        Log::debug("trackerlogerr fired");
-        Log::debug(json_encode($track));
         EventQueue::addEvent($track);
     }
 }
