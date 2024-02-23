@@ -56,7 +56,7 @@ class LaravelAbServiceProvider extends PackageServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../config/ab.php', 'laravel-ab'
         );
-        $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddleware(LaravelAbMiddleware::class);
+        $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddlewareToGroup('web', LaravelAbMiddleware::class);
         $this->app->bind('Ab', LaravelAb::class);
         $this->registerCompiler();
     }
