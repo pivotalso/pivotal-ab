@@ -68,7 +68,16 @@ class LaravelAb
             }
 
             session()->put($key, $uid);
-
+            $metadata = (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : []);
+            $captured_data = [];
+            if (!empty($request)) {
+                [
+                    'user_agent' => $request->header('User-Agent'),
+                    'ip' => $client,
+                    'referrer' => $request->header('referer'),
+                    'url' => $request->fullUrl(),
+                ];
+            }
             self::$session = Instance::firstOrCreate(
                 [
                     'instance' => $uid
@@ -76,7 +85,10 @@ class LaravelAb
                 [
                 'instance' => $uid,
                 'identifier' => $client,
-                'metadata' => (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : null),
+                'metadata' => array_merge(
+                    $metadata,
+                    $captured_data
+                  )
                 ]
             );
             self::$events =  self::$session->events()->get();
