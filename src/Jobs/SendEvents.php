@@ -21,7 +21,7 @@ class SendEvents implements ShouldQueue
     {
 
         $key = config('laravel-ab.api_key');
-        $host = env('LARAVEL_AB_API_URL', 'https://ab.yosc.xyz'); // TODO - change before launch
+        $host = env('LARAVEL_AB_API_URL', 'https://ab.pivotal.so'); // TODO - change before launch
         $events = [];
         $queue = EventQueue::getEvents();
 
