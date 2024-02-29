@@ -3,25 +3,17 @@
 namespace pivotalso\LaravelAb;
 
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Facades\Event;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 
-use pivotalso\LaravelAb\Events\Track;
 use pivotalso\LaravelAb\Commands\AbReport;
-use pivotalso\LaravelAb\Listeners\TrackerLogger;
+use pivotalso\LaravelAb\Commands\AbExport;
 use pivotalso\LaravelAb\Http\Middleware\LaravelAbMiddleware;
 
 
 class LaravelAbServiceProvider extends PackageServiceProvider
 {
-    protected $listen = [
-        'pivotalso\LaravelAb\Events\Track' => [
-            'pivotalso\LaravelAb\Listeners\TrackerLogger',
-        ],
-    ];
-
     public function configurePackage(Package $package): void
     {
         /*
@@ -41,7 +33,7 @@ class LaravelAbServiceProvider extends PackageServiceProvider
             ])
             ->hasViews('laravel-ab')
             ->hasRoute('web')
-            ->hasCommand(AbReport::class)
+            ->hasCommands(AbReport::class, AbExport::class)
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->publishConfigFile()
