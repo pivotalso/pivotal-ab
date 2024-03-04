@@ -32,11 +32,19 @@ class Events extends Model
 
     public function experiment()
     {
-        return $this->belongsTo('pivotalso\LaravelAb\Models\Experiment');
+        return $this->belongsTo('pivotalso\LaravelAb\Models\Experiments', 'experiments_id', 'id');
     }
 
     public function instance()
     {
         return $this->belongsTo('pivotalso\LaravelAb\Models\Instance');
+    }
+
+    public function toExport()
+    {
+        $data = $this->toArray();
+        $data['instance'] = $this->instance()->first()->instance;
+        $data['experiment'] = $this->experiment()->first()->experiment;
+        return $data;
     }
 }

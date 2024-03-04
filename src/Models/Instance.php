@@ -38,4 +38,9 @@ class Instance extends Model
     {
         return unserialize($value);
     }
+
+    public function toExport()
+    {
+        return $this->toArray();
+    }
 }

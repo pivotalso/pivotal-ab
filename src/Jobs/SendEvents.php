@@ -30,7 +30,7 @@ class SendEvents implements ShouldQueue
             foreach ($queue as $event) {
                 $reflect = new ReflectionClass($event->model);
 
-                $data = $event->model->toArray();
+                $data = $event->model->toExport();
                 $type = !empty($event->type) ? $event->type : $reflect->getShortName();
                 $events[] = [
                     'type' => $type,

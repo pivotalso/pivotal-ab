@@ -39,4 +39,11 @@ class Goal extends Model
     {
         return $this->belongsTo('pivotalso\LaravelAb\Models\Instance');
     }
+
+    public function toExport()
+    {
+        $data = $this->toArray();
+        $data['instance'] = $this->instance()->first()->instance;
+        return $data;
+    }
 }

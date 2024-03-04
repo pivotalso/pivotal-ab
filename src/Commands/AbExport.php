@@ -28,10 +28,44 @@ class AbExport extends Command
      */
     public function handle()
     {
-        $experiments = Experiments::orderBy('created_at')->get();
-        $goals = Goal::orderBy('created_at')->get();
-        $instances = Instance::orderBy('created_at')->get();
-        $events = Events::orderBy('created_at')->get();
+        $experiments = Experiments::orderBy('created_at')->get()->map(function($experiment) {
+            return [
+                'experiment' => $experiment->experiment,
+                'goal' => $experiment->goal,
+                'created_at' => $experiment->created_at->toDateTimeString(),
+            ];
+        });
+        $goals = Goal::with('instance')->orderBy('created_at')->get()->map(function($goal) {
+            return [
+                'goal' => $goal->goal,
+                'value' => $goal->value,
+                'instance' => $goal->instance->instance,
+                'created_at' => $goal->created_at->toDateTimeString(),
+            ];
+        });
+        $instances = Instance::orderBy('created_at')->get()->map(function($instance) {
+            return [
+                'instance' => $instance->instance,
+                'identifier' => $instance->identifier,
+                'created_at' => $instance->created_at->toDateTimeString(),
+            ];
+        });
+        $events = Events::with('instance', 'experiment')->orderBy('created_at')->get()->map(function($event) {
+            return [
+                'experiment' => $event->experiment->experiment,
+                'name' => $event->name,
+                'value' => $event->value,
+                'instance' => $event->instance->instance,
+                'created_at' => $event->created_at->toDateTimeString()
+            ];
+        });
+
+        $data = [
+            'experiments' => $experiments,
+            'goals' => $goals,
+            'instances' => $instances,
+            'events' => $events,
+        ];
 
         $data = [
             'experiments' => $experiments,

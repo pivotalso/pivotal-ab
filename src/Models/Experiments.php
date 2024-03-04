@@ -26,4 +26,9 @@ class Experiments extends \Eloquent
     /*public function goals(){
         return $this->hasMany('EightyTwoRules\LaravelAb\Goal', 'goal','goal');
     }*/
+
+    public function toExport()
+    {
+        return $this->toArray();
+    }
 }
