@@ -1,5 +1,7 @@
 # Laravel AB by Pivotal
 
+## Currently under testing for official release - 4.4.2024
+
 ![example workflow](https://github.com/pivotalso/laravel-ab/actions/workflows/tests.yml/badge.svg)
 
 Laravel A/B by Pivotal is a package to help you create and manage A/B tests 
