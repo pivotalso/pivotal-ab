@@ -1,4 +1,4 @@
-Copyright (c) Pivotal (Ye Olde Software Company) <rulian@yeoldesoftwareco.com>
+Copyright (c) Pivotal (Wonderful Software) <rulian@wonderful.so>
 
 License Agreement
 

@@ -1,5 +1,4 @@
-# Laravel AB by Pivotal (WIP)
-NOTE:: This package is still in development and not ready for production use.
+# Laravel AB by Pivotal
 
 ![example workflow](https://github.com/pivotalso/laravel-ab/actions/workflows/tests.yml/badge.svg)
 
