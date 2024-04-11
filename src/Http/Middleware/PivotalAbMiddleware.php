@@ -1,12 +1,12 @@
 <?php
 
-namespace pivotalso\LaravelAb\Http\Middleware;
+namespace pivotalso\PivotalAb\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use pivotalso\LaravelAb\Facades\Ab;
+use pivotalso\PivotalAb\Facades\Ab;
 
-class LaravelAbMiddleware
+class PivotalAbMiddleware
 {
     /**
      * Handle an incoming request.

@@ -1,16 +1,16 @@
 <?php
 
-namespace pivotalso\LaravelAb\Facades;
+namespace pivotalso\PivotalAb\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \pivotalso\LaravelAb\LaravelAb
+ * @see \pivotalso\PivotalAb\PivotalAb
  */
 class Ab extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return \pivotalso\LaravelAb\LaravelAb::class;
+        return \pivotalso\PivotalAb\PivotalAb::class;
     }
 }

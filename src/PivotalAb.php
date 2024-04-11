@@ -1,19 +1,19 @@
 <?php
 
-namespace pivotalso\LaravelAb;
+namespace pivotalso\PivotalAb;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use pivotalso\LaravelAb\Jobs\SendEvents;
-use pivotalso\LaravelAb\Models\Events;
-use pivotalso\LaravelAb\Models\Experiments;
-use pivotalso\LaravelAb\Models\Goal;
-use pivotalso\LaravelAb\Models\Instance;
+use pivotalso\PivotalAb\Jobs\SendEvents;
+use pivotalso\PivotalAb\Models\Events;
+use pivotalso\PivotalAb\Models\Experiments;
+use pivotalso\PivotalAb\Models\Goal;
+use pivotalso\PivotalAb\Models\Instance;
 use stdClass;
 
-class LaravelAb
+class PivotalAb
 {
     /**
      * @var static

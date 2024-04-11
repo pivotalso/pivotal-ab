@@ -1,9 +1,9 @@
 <?php
 
-namespace pivotalso\LaravelAb\Models;
+namespace pivotalso\PivotalAb\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use pivotalso\LaravelAb\Events\Track;
+use pivotalso\PivotalAb\Events\Track;
 
 class Events extends Model
 {
@@ -32,12 +32,12 @@ class Events extends Model
 
     public function experiment()
     {
-        return $this->belongsTo('pivotalso\LaravelAb\Models\Experiments', 'experiments_id', 'id');
+        return $this->belongsTo('pivotalso\PivotalAb\Models\Experiments', 'experiments_id', 'id');
     }
 
     public function instance()
     {
-        return $this->belongsTo('pivotalso\LaravelAb\Models\Instance');
+        return $this->belongsTo('pivotalso\PivotalAb\Models\Instance');
     }
 
     public function toExport()

@@ -1,6 +1,6 @@
 <?php
 
-namespace eighttworules\LaravelAb\Database\Factories;
+namespace eighttworules\PivotalAb\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 

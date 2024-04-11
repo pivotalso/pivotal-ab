@@ -1,18 +1,18 @@
 <?php
 
-namespace pivotalso\LaravelAb;
+namespace pivotalso\PivotalAb;
 
 use Illuminate\Support\Facades\Blade;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 
-use pivotalso\LaravelAb\Commands\AbReport;
-use pivotalso\LaravelAb\Commands\AbExport;
-use pivotalso\LaravelAb\Http\Middleware\LaravelAbMiddleware;
+use pivotalso\PivotalAb\Commands\AbReport;
+use pivotalso\PivotalAb\Commands\AbExport;
+use pivotalso\PivotalAb\Http\Middleware\PivotalAbMiddleware;
 
 
-class LaravelAbServiceProvider extends PackageServiceProvider
+class PivotalAbServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
@@ -48,8 +48,8 @@ class LaravelAbServiceProvider extends PackageServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../config/ab.php', 'laravel-ab'
         );
-        $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddlewareToGroup('web', LaravelAbMiddleware::class);
-        $this->app->bind('Ab', LaravelAb::class);
+        $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddlewareToGroup('web', PivotalAbMiddleware::class);
+        $this->app->bind('Ab', PivotalAb::class);
         $this->registerCompiler();
     }
 

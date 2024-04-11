@@ -1,6 +1,6 @@
 <?php
 
-namespace pivotalso\LaravelAb\Events;
+namespace pivotalso\PivotalAb\Events;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;

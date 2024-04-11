@@ -1,9 +1,9 @@
 <?php
 
-namespace pivotalso\LaravelAb\Models;
+namespace pivotalso\PivotalAb\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use pivotalso\LaravelAb\Events\Track;
+use pivotalso\PivotalAb\Events\Track;
 
 class Instance extends Model
 {
@@ -21,12 +21,12 @@ class Instance extends Model
 
     public function events()
     {
-        return $this->hasMany('pivotalso\LaravelAb\Models\Events');
+        return $this->hasMany('pivotalso\PivotalAb\Models\Events');
     }
 
     public function goals()
     {
-        return $this->hasMany('pivotalso\LaravelAb\Models\Goal');
+        return $this->hasMany('pivotalso\PivotalAb\Models\Goal');
     }
 
     public function setMetadataAttribute($value)

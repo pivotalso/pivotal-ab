@@ -1,13 +1,13 @@
 <?php
 
-namespace pivotalso\LaravelAb\Jobs;
+namespace pivotalso\PivotalAb\Jobs;
 
 use \Illuminate\Support\Facades\Log;
 use ReflectionClass;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use pivotalso\LaravelAb\EventQueue;
+use pivotalso\PivotalAb\EventQueue;
 
 class SendEvents implements ShouldQueue
 {

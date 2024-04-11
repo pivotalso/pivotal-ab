@@ -1,6 +1,6 @@
 <?php
 
-namespace pivotalso\LaravelAb\Jobs;
+namespace pivotalso\PivotalAb\Jobs;
 
 class GetReport
 {

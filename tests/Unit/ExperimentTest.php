@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Request;
-use pivotalso\LaravelAb\Models\Experiments;
-use pivotalso\LaravelAb\Models\Goal;
-use pivotalso\LaravelAb\Models\Instance;
+use pivotalso\PivotalAb\Models\Experiments;
+use pivotalso\PivotalAb\Models\Goal;
+use pivotalso\PivotalAb\Models\Instance;
 
 putenv("LARAVEL_AB_ALLOW_PARAM=true");
 

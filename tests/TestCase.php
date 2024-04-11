@@ -1,10 +1,10 @@
 <?php
 
-namespace pivotalso\LaravelAb\Tests;
+namespace pivotalso\PivotalAb\Tests;
 
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Route;
-use pivotalso\LaravelAb\LaravelAbServiceProvider;
+use pivotalso\PivotalAb\PivotalAbServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
 
@@ -15,7 +15,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'pivotalso\\LaravelAb\\Database\\Factories\\'.class_basename($modelName).'Factory'
+            fn (string $modelName) => 'pivotalso\\PivotalAb\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
 
     }
@@ -23,7 +23,7 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            LaravelAbServiceProvider::class,
+            PivotalAbServiceProvider::class,
         ];
     }
 

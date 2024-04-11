@@ -13,14 +13,14 @@ locally or by integration into Pivotal AB services.
 You can install the package via composer:
 
 ```bash
-composer require pivotalso/laravel-ab
+composer require pivotalso/pivotal-ab
 ```
 Add the service provider in `config/app.php`:
 
 ```php
     'providers' => ServiceProvider::defaultProviders()->merge([
         ...
-        pivotalso\LaravelAb\LaravelAbServiceProvider::class,
+        pivotalso\PivotalAb\PivotalAbServiceProvider::class,
     ]),
 ````
 
@@ -30,8 +30,8 @@ Add the following to your `EventServiceProvider`:
 
 ```php
   ....
-  use pivotalso\LaravelAb\Events\Track;
-  use pivotalso\LaravelAb\Listeners\TrackerLogger;
+  use pivotalso\PivotalAb\Events\Track;
+  use pivotalso\PivotalAb\Listeners\TrackerLogger;
   
   class EventServiceProvider extends ServiceProvider {
        protected $listen = [
@@ -131,9 +131,9 @@ or for example
     public function store(Request $request)
     {
         .... store logic
-        LaravelAb::goal('sign up');
+        PivotalAb::goal('sign up');
         if($request->has('free_trial')) {
-            LaravelAb::goal('free trial');
+            PivotalAb::goal('free trial');
         }
     }
 ```

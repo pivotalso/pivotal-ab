@@ -1,8 +1,8 @@
 <?php
 
-use eighttworules\LaravelAb\Jobs\GetLists;
-use eighttworules\LaravelAb\Jobs\GetReport;
 use Illuminate\Support\Facades\Route;
+use pivotalso\PivotalAb\Jobs\GetLists;
+use pivotalso\PivotalAb\Jobs\GetReport;
 
 /*
 |--------------------------------------------------------------------------

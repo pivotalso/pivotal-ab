@@ -32,13 +32,13 @@
     },
     "autoload": {
         "psr-4": {
-            "pivotalso\\LaravelAb\\": "src/",
-            "pivotalso\\LaravelAb\\Database\\Factories\\": "database/factories/"
+            "pivotalso\\PivotalAb\\": "src/",
+            "pivotalso\\PivotalAb\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "pivotalso\\LaravelAb\\Tests\\": "tests/",
+            "pivotalso\\PivotalAb\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -69,10 +69,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "pivotalso\\LaravelAb\\LaravelAbServiceProvider"
+                "pivotalso\\PivotalAb\\PivotalAbServiceProvider"
             ],
             "aliases": {
-                "LaravelAb": "pivotalso\\LaravelAb\\Facades\\LaravelAb"
+                "PivotalAb": "pivotalso\\PivotalAb\\Facades\\PivotalAb"
             }
         }
     },

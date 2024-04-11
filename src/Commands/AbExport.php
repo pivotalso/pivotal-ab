@@ -1,14 +1,14 @@
 <?php
 
-namespace pivotalso\LaravelAb\Commands;
+namespace pivotalso\PivotalAb\Commands;
 
 use Illuminate\Console\Command;
-use pivotalso\LaravelAb\Jobs\GetLists;
-use pivotalso\LaravelAb\Jobs\GetReport;
-use pivotalso\LaravelAb\Models\Events;
-use pivotalso\LaravelAb\Models\Experiments;
-use pivotalso\LaravelAb\Models\Goal;
-use pivotalso\LaravelAb\Models\Instance;
+use pivotalso\PivotalAb\Jobs\GetLists;
+use pivotalso\PivotalAb\Jobs\GetReport;
+use pivotalso\PivotalAb\Models\Events;
+use pivotalso\PivotalAb\Models\Experiments;
+use pivotalso\PivotalAb\Models\Goal;
+use pivotalso\PivotalAb\Models\Instance;
 
 class AbExport extends Command
 {

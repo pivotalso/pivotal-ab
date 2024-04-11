@@ -1,10 +1,10 @@
 <?php
 
-namespace pivotalso\LaravelAb\Listeners;
+namespace pivotalso\PivotalAb\Listeners;
 
 use Illuminate\Support\Facades\Log;
-use pivotalso\LaravelAb\EventQueue;
-use pivotalso\LaravelAb\Events\Track;
+use pivotalso\PivotalAb\EventQueue;
+use pivotalso\PivotalAb\Events\Track;
 
 class TrackerLogger
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace pivotalso\LaravelAb\Commands;
+namespace pivotalso\PivotalAb\Commands;
 
 use Illuminate\Console\Command;
-use pivotalso\LaravelAb\Jobs\GetLists;
-use pivotalso\LaravelAb\Jobs\GetReport;
+use pivotalso\PivotalAb\Jobs\GetLists;
+use pivotalso\PivotalAb\Jobs\GetReport;
 
 class AbReport extends Command
 {

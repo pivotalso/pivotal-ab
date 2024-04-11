@@ -1,8 +1,8 @@
 <?php
 
-namespace pivotalso\LaravelAb\Models;
+namespace pivotalso\PivotalAb\Models;
 
-use pivotalso\LaravelAb\Events\Track;
+use pivotalso\PivotalAb\Events\Track;
 
 class Experiments extends \Eloquent
 {
@@ -20,11 +20,11 @@ class Experiments extends \Eloquent
 
     public function events()
     {
-        return $this->hasMany('pivotalso\LaravelAb\Models\Events');
+        return $this->hasMany('pivotalso\PivotalAb\Models\Events');
     }
 
     /*public function goals(){
-        return $this->hasMany('EightyTwoRules\LaravelAb\Goal', 'goal','goal');
+        return $this->hasMany('EightyTwoRules\PivotalAb\Goal', 'goal','goal');
     }*/
 
     public function toExport()

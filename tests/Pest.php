@@ -1,5 +1,5 @@
 <?php
 
-use pivotalso\LaravelAb\Tests\TestCase;
+use pivotalso\PivotalAb\Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);
