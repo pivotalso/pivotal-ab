@@ -45,7 +45,6 @@ as well as add `LARAVEL_AB_API_KEY` to your `.env` file
 You can get your api key from your project settings page on Pivotal AB.
 
 
-```bash
 You can publish and run the migrations with:
 
 ```bash
