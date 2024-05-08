@@ -163,6 +163,16 @@ a sample output would be
 }
 ```
 
+You can also see report on your browser if you specify a reporting url, username, and password
+
+```
+LARAVEL_AB_REPORT_URL='/hidden/ab/reports'
+LARAVEL_AB_REPORT_USERNAME='user123'
+LARAVEL_AB_REPORT_PASSWORD='password123'
+```
+
+You can then visit `http://yourapp.com/hidden/ab/reports` to view your reports
+
 ## Testing
 
 ```bash
