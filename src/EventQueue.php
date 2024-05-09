@@ -2,6 +2,8 @@
 
 namespace pivotalso\PivotalAb;
 
+use Illuminate\Support\Facades\Log;
+
 class EventQueue
 {
     /**
@@ -12,6 +14,7 @@ class EventQueue
 
     public static function addEvent($event)
     {
+        Log::debug(json_encode(['insideEventQueue'=> $event->model->toArray() ], JSON_PRETTY_PRINT));
         self::$events = [...self::$events, $event];
     }
 

@@ -3,6 +3,7 @@
 namespace pivotalso\PivotalAb\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use pivotalso\PivotalAb\Events\Track;
 
 class Events extends Model
@@ -19,6 +20,7 @@ class Events extends Model
     {
         parent::boot();
         self::created(function ($model) {
+            Log::debug(json_encode($model->toArray(), JSON_PRETTY_PRINT));
             event(new Track($model));
         });
     }

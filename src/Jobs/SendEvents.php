@@ -19,12 +19,10 @@ class SendEvents implements ShouldQueue
 
     public function handle()
     {
-
         $key = config('laravel-ab.api_key');
         $host = env('LARAVEL_AB_API_URL', 'https://ab.pivotal.so'); // TODO - change before launch
         $events = [];
         $queue = EventQueue::getEvents();
-
 
         if (! empty($key) && ! empty($host) && count($queue) > 0) {
             foreach ($queue as $event) {
@@ -37,6 +35,7 @@ class SendEvents implements ShouldQueue
                     'payload' => $data,
                 ];
             }
+            Log::debug(json_encode($events, JSON_PRETTY_PRINT));
             try {
                 if (!empty($events)) {
                     $client = new Client([
