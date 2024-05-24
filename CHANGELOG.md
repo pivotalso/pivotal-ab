@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-ab` will be documented in this file.
 
+## Updated Laravel Depedencies - 2024-05-24
+
+**Full Changelog**: https://github.com/pivotalso/pivotal-ab/compare/1.1.1...1.1.2
+
 ## Upgraded Reporting URL - 2024-05-08
 
 ### What's Changed
