@@ -4,23 +4,21 @@ namespace pivotalso\PivotalAb;
 
 class EventQueue
 {
-    /**
-     * @var static
-     *             Instance Object to identify user's session
-     */
-    protected static $events = [];
+    /** @var array<int, object> */
+    protected static array $events = [];
 
-    public static function addEvent($event)
+    public static function addEvent(object $event): void
     {
-        self::$events = [...self::$events, $event];
+        self::$events[] = $event;
     }
 
-    public static function getEvents()
+    /** @return array<int, object> */
+    public static function getEvents(): array
     {
         return self::$events;
     }
 
-    public static function clearEvents()
+    public static function clearEvents(): void
     {
         self::$events = [];
     }

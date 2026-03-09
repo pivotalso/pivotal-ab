@@ -2,65 +2,55 @@
 
 namespace pivotalso\PivotalAb\Jobs;
 
-use \Illuminate\Support\Facades\Log;
-use ReflectionClass;
 use GuzzleHttp\Client;
 use Illuminate\Contracts\Queue\ShouldQueue;
-
+use Illuminate\Support\Facades\Log;
 use pivotalso\PivotalAb\EventQueue;
+use ReflectionClass;
 
 class SendEvents implements ShouldQueue
 {
-    /**
-     * Execute the job.
-     * Return a list of experiments and their hits
-     */
-    private $url = 'api/events/track';
+    private string $url = 'api/events/track';
 
-    public function handle()
+    public function handle(): void
     {
-
         $key = config('laravel-ab.api_key');
-        $host = env('LARAVEL_AB_API_URL', 'https://ab.pivotal.so'); // TODO - change before launch
-        $events = [];
+        $host = config('laravel-ab.api_url', 'https://ab.pivotal.so');
         $queue = EventQueue::getEvents();
 
+        if (empty($key) || empty($host) || count($queue) === 0) {
+            return;
+        }
 
-        if (! empty($key) && ! empty($host) && count($queue) > 0) {
-            foreach ($queue as $event) {
-                $reflect = new ReflectionClass($event->model);
+        $events = [];
+        foreach ($queue as $event) {
+            $reflect = new ReflectionClass($event->model);
+            $events[] = [
+                'type' => ! empty($event->type) ? $event->type : $reflect->getShortName(),
+                'payload' => $event->model->toExport(),
+            ];
+        }
 
-                $data = $event->model->toExport();
-                $type = !empty($event->type) ? $event->type : $reflect->getShortName();
-                $events[] = [
-                    'type' => $type,
-                    'payload' => $data,
-                ];
-            }
-            try {
-                if (!empty($events)) {
-                    $client = new Client([
-                        'base_uri' => $host,
-                        'connect_timeout' => true,
-                        'timeout'         => 2.0,
-                        'headers' => [
-                            'Content-Type' => 'application/json',
-                            'Accept' => 'application/json',
-                            'Authorization' => sprintf('Bearer %s', $key),
-                        ],
-                    ]);
+        try {
+            $client = new Client([
+                'base_uri' => $host,
+                'connect_timeout' => 2.0,
+                'timeout' => 2.0,
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                    'Authorization' => sprintf('Bearer %s', $key),
+                ],
+            ]);
 
-                    $client->request('POST', $this->url, [
-                        'body' => json_encode($events),
-                    ]);
-                    EventQueue::clearEvents();
-                }
+            $client->request('POST', $this->url, [
+                'body' => json_encode($events),
+            ]);
 
-            } catch (\Exception $e) {
-                Log::debug('Unable to send AB test data to API, please check the following error');
-                Log::error($e->getMessage());
-            }
-
+            EventQueue::clearEvents();
+        } catch (\Exception $e) {
+            Log::debug('Unable to send AB test data to API, please check the following error');
+            Log::error($e->getMessage());
         }
     }
 }

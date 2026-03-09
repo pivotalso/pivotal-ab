@@ -3,9 +3,10 @@
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Route;
 
-it("nested routes", function () {
+it('nested routes', function () {
     Route::get('/nested', function () {
         $content = file_get_contents(__DIR__.'/templates/nested.blade.php');
+
         return Blade::render($content);
     });
     $response = $this->get('/nested');
@@ -16,9 +17,10 @@ it("nested routes", function () {
     $expect->not->toContain('@ab');
 });
 
-it("weighted routes", function () {
+it('weighted routes', function () {
     Route::get('/weighted', function () {
         $content = file_get_contents(__DIR__.'/templates/weighted.blade.php');
+
         return Blade::render($content);
     });
     $response = $this->get('/weighted');

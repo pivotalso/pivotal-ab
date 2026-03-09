@@ -2,11 +2,9 @@
 
 namespace pivotalso\PivotalAb\Tests;
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\Route;
-use pivotalso\PivotalAb\PivotalAbServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
+use pivotalso\PivotalAb\PivotalAbServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -36,7 +34,7 @@ class TestCase extends Orchestra
         }
         touch($dbPath);
         config()->set('database.connections.sqlite.database', $dbPath);
-        foreach([
+        foreach ([
             'create_laravel_ab_events_table.php',
             'create_laravel_ab_experiments_table.php',
             'create_laravel_ab_goal_table.php',

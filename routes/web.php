@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use pivotalso\PivotalAb\Http\Middleware\PivotalBasicAuthMiddleware;
@@ -15,13 +16,14 @@ use pivotalso\PivotalAb\Jobs\GetReport;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-if(config('laravel-ab.report_url') && config('laravel-ab.report_username') && config('laravel-ab.report_password')) {
-    Route::middleware(PivotalBasicAuthMiddleware::class)->group(function(){
+if (config('laravel-ab.report_url') && config('laravel-ab.report_username') && config('laravel-ab.report_password')) {
+    Route::middleware(PivotalBasicAuthMiddleware::class)->group(function () {
         $path = config('laravel-ab.report_url');
         $logout = sprintf('%s/logout', $path);
         Route::get($logout, function () {
-            $_SERVER['PHP_AUTH_USER'] = "";
-            $_SERVER['PHP_AUTH_PW'] = "";
+            $_SERVER['PHP_AUTH_USER'] = '';
+            $_SERVER['PHP_AUTH_PW'] = '';
+
             return redirect('/')->withHeaders([
                 'HTTP/1.1 401 Authorization Required',
                 'WWW-Authenticate: Basic realm="Access denied"',
@@ -31,11 +33,11 @@ if(config('laravel-ab.report_url') && config('laravel-ab.report_username') && co
         $url = sprintf('%s/{id?}', $path);
         Route::get($url, function (Request $request) use ($path) {
             $id = $request->get('id', null);
-            $reports = dispatch_sync(new GetLists());
+            $reports = dispatch_sync(new GetLists);
             $experiments = [];
             foreach ($reports as $report) {
                 $experiments[] = [
-                    'id'=> $report->id,
+                    'id' => $report->id,
                     'name' => $report->experiment,
                     'conditions' => dispatch_sync(new GetReport($report->experiment)),
                 ];
@@ -47,6 +49,7 @@ if(config('laravel-ab.report_url') && config('laravel-ab.report_username') && co
             } else {
                 $experiment = $experiments[0];
             }
+
             return view('laravel-ab::report', compact('experiments', 'experiment', 'path', 'id'));
         });
     });

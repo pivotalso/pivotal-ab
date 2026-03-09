@@ -12,41 +12,23 @@ class AbReport extends Command
     {experiment? : Name of the experiment to report on}
     {--list : list experiments in database}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'provides statistic on experiments';
+    protected $description = 'Provides statistics on experiments';
 
-    /**
-     * Create a new command instance.
-     */
-    public function __construct()
+    public function handle(): void
     {
-        parent::__construct();
-    }
+        $experiment = $this->argument('experiment');
+        $list = $this->option('list');
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
-    {
-        $experiment = $this->argument('experiment', false);
-        $list = $this->option('list', false);
+        if ($list) {
+            $this->prettyPrint(dispatch_sync(new GetLists));
 
-        if ($list == true) {
-            $this->prettyPrint(dispatch_sync(new GetLists()));
-
-            return true;
+            return;
         }
 
         if (! empty($experiment)) {
             $this->prettyPrint(dispatch_sync(new GetReport($experiment)));
         } else {
-            $reports = dispatch_sync(new GetLists());
+            $reports = dispatch_sync(new GetLists);
             $info = [];
             foreach ($reports as $report) {
                 $info[$report->experiment] = dispatch_sync(new GetReport($report->experiment));
@@ -55,7 +37,7 @@ class AbReport extends Command
         }
     }
 
-    public function prettyPrint($info)
+    protected function prettyPrint(mixed $info): void
     {
         $this->info(json_encode($info, JSON_PRETTY_PRINT));
     }

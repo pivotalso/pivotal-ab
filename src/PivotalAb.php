@@ -3,299 +3,280 @@
 namespace pivotalso\PivotalAb;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use pivotalso\PivotalAb\Jobs\SendEvents;
 use pivotalso\PivotalAb\Models\Events;
 use pivotalso\PivotalAb\Models\Experiments;
 use pivotalso\PivotalAb\Models\Goal;
 use pivotalso\PivotalAb\Models\Instance;
-use stdClass;
 
 class PivotalAb
 {
-    /**
-     * @var static
-     *             Instance Object to identify user's session
-     */
-    protected static $session;
+    protected static ?Instance $session = null;
 
-    /**
-     * @var
-     *
-     * Tracks every $experiment->fired condition the view is initiating
-     * and event key->value pais for the instance
-     */
-    protected static $instance = [];
+    /** @var array<string, PivotalAb> */
+    protected static array $instance = [];
 
-    protected static $events = [];
+    /** @var Collection<int, Events> */
+    protected static Collection $events;
 
-    /*
-     * Individual Test Parameters
-     */
-    protected $name;
+    protected string $name = '';
 
-    protected $conditions = [];
+    /** @var array<string, string> */
+    protected array $conditions = [];
 
-    protected $fired;
+    protected ?string $fired = null;
 
-    protected $goal;
+    protected ?string $goal = null;
 
+    protected bool $usesOutputBuffering = false;
 
-    public static function initUser(Request $request = null)
+    public static function initUser(?Request $request = null): void
     {
         $key = config('laravel-ab.cache_key');
         $param_key = config('laravel-ab.request_param');
 
-        if (empty(self::$session)) {
-            $client = Str::random(12);
-            if (!empty($request)) {
-                $client = $request->getClientIp();
-            }
-            $uid = null;
-            if (config('laravel-ab.allow_param') && !empty($request) && $request->has($param_key)) {
-                $uid = $request->input($param_key);
-            }
-            if (empty($uid)) {
-                $uid = session()->get($key);
-            }
-            if (empty($uid)) {
-                $uid = Cookie::get($key);
-            }
-            if (empty($uid)) {
-                $uid = md5(uniqid().$client);
-            }
+        if (self::$session !== null) {
+            return;
+        }
 
-            session()->put($key, $uid);
-            $metadata = (function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : []);
-            $captured_data = [];
-            if (!empty($request)) {
-                [
-                    'user_agent' => $request->header('User-Agent'),
-                    'ip' => $client,
-                    'referrer' => $request->header('referer'),
-                    'url' => $request->fullUrl(),
-                ];
-            }
-            self::$session = Instance::firstOrCreate(
-                [
-                    'instance' => $uid
-                ],
-                [
+        $client = $request?->getClientIp() ?? Str::random(12);
+
+        $uid = null;
+        if (config('laravel-ab.allow_param') && $request?->has($param_key)) {
+            $uid = $request->input($param_key);
+        }
+        $uid = $uid ?: session()->get($key);
+        $uid = $uid ?: Cookie::get($key);
+        $uid = $uid ?: md5(uniqid().$client);
+
+        session()->put($key, $uid);
+
+        /** @var array<string, mixed> $metadata */
+        $metadata = function_exists('laravel_ab_meta') ? call_user_func('laravel_ab_meta') : []; // @phpstan-ignore argument.type
+        $captured_data = [];
+        if ($request) {
+            $captured_data = [
+                'user_agent' => $request->header('User-Agent'),
+                'ip' => $client,
+                'referrer' => $request->header('referer'),
+                'url' => $request->fullUrl(),
+            ];
+        }
+
+        self::$session = Instance::firstOrCreate(
+            ['instance' => $uid],
+            [
                 'instance' => $uid,
                 'identifier' => $client,
-                'metadata' => array_merge(
-                    $metadata,
-                    $captured_data
-                  )
-                ]
-            );
-            self::$events =  self::$session->events()->get();
-        }
+                'metadata' => array_merge($metadata, $captured_data),
+            ]
+        );
+        self::$events = self::$session->events()->get();
     }
 
     /**
-     * When the view is rendered, this funciton saves all event->firing pairing to storage.
+     * Persist all experiment selections to storage and dispatch API sync.
      */
-    public static function saveSession()
+    public static function saveSession(): ?string
     {
-        if (! empty(self::$instance)) {
-            foreach (self::$instance as $event) {
+        if (! empty(self::$instance) && self::$session) {
+            foreach (self::$instance as $ab) {
                 $experiment = Experiments::firstOrCreate([
-                    'experiment' => $event->name,
-                    'goal' => $event->goal,
+                    'experiment' => $ab->name,
+                    'goal' => $ab->goal,
                 ]);
                 $event = Events::firstOrCreate([
                     'instance_id' => self::$session->id,
                     'experiments_id' => $experiment->id,
-                    'name' => $event->name,
-                    'value' => $event->fired,
+                    'name' => $ab->name,
+                    'value' => $ab->fired,
                 ]);
                 self::$session->events()->save($event);
             }
         }
-        dispatch(new SendEvents());
+
+        dispatch(new SendEvents);
+
         return session()->get(config('laravel-ab.cache_key'));
     }
 
-    public function selectOption($option) {
+    public function selectOption(string $option): self
+    {
         $this->fired = $option;
+
         return $this;
     }
-    /**
-     * @return $this
-     *
-     * Used to track the name of the experiment
-     */
-    public function experiment($experiment)
+
+    public function experiment(string $experiment): self
     {
         $this->name = $experiment;
         self::$instance[$experiment] = $this;
+
         return $this;
     }
 
     /**
-     * @return string
-     *
-     * Sets the tracking target for the experiment, and returns one of the conditional elements for display
+     * Set the goal, close output buffering, and return the selected condition's content.
      */
-    public function track($goal)
+    public function track(string $goal): string
     {
         $this->goal = $goal;
 
-        if (ob_get_level()) {
+        if ($this->usesOutputBuffering && ob_get_level()) {
             ob_end_clean();
         }
 
-        $conditions = [];
-        foreach ($this->conditions as $key => $condition) {
-            if (preg_match('/\[(\d+)\]/', $key, $matches)) {
-                foreach (range(1, $matches[1]) as $index) {
-                    $conditions[] = $key;
-                }
-            }
-        }
-        if (empty($conditions)) {
-            $conditions = array_keys($this->conditions);
-        }
-        /// has the user fired this particular experiment yet?
-        if (empty($this->fired) || empty( $this->conditions[$this->fired])) {
+        $conditions = $this->buildWeightedConditions();
+
+        if (empty($this->fired) || ! isset($this->conditions[$this->fired])) {
             $fired = $this->hasExperiment($this->name);
-            if (!empty($fired) && !empty($this->conditions[$fired])) {
+            if ($fired !== false && isset($this->conditions[$fired])) {
                 $this->fired = $fired;
             } else {
                 shuffle($conditions);
-                $this->fired = current($conditions);
+                $this->fired = current($conditions) ?: array_key_first($this->conditions);
             }
         }
 
-
-        return $this->conditions[$this->fired];
+        return $this->conditions[$this->fired] ?? '';
     }
 
     /**
-     * @param  goal  $value
-     *
-     * Insert a simple goal tracker to know if user has reach a milestone
+     * Track a goal completion for the current session.
      */
-    public static function goal($goal, $value = null)
+    public static function goal(string $goal, mixed $value = null): ?Goal
     {
-        if (!empty(self::$session)) {
-            $goal = Goal::create(['instance_id' => self::$session->id, 'goal' => $goal, 'value' => $value]);
-
-            self::$session->goals()->save($goal);
-
-            return $goal;
+        if (self::$session === null) {
+            return null;
         }
+
+        $goalModel = Goal::create([
+            'instance_id' => self::$session->id,
+            'goal' => $goal,
+            'value' => $value,
+        ]);
+        self::$session->goals()->save($goalModel);
+
+        return $goalModel;
     }
 
     /**
-     * @returns void
-     *
-     * Captures the HTML between AB condtions  and tracks them to their condition name.
-     * One of these conditions will be randomized to some ratio for display and tracked
+     * Capture HTML between conditions using output buffering.
      */
-    public function condition($condition)
+    public function condition(string $condition): void
     {
-        $reference = $this;
+        $this->usesOutputBuffering = true;
 
         if (count($this->conditions) !== 0) {
             ob_end_clean();
         }
 
-        $reference->saveCondition($condition, ''); /// so above count fires after first pass
+        $this->saveCondition($condition, '');
 
-        ob_start(function ($data) use ($condition, $reference) {
-            $reference->saveCondition($condition, $data);
+        ob_start(function (string $data) use ($condition): string {
+            $this->saveCondition($condition, $data);
+
+            return '';
         });
     }
 
-
-    public static function getSession()
+    public static function getSession(): ?Instance
     {
         return self::$session;
     }
 
-    /**
-     * @returns void
-     *
-     * A setter for the condition key=>value pairing.
-     */
-    public function saveCondition($condition, $data)
+    public function saveCondition(string $condition, string $data): void
     {
         $this->conditions[$condition] = $data;
     }
 
     /**
-     * @param  $experiment
-     * @param  $condition
-     *
-     * Tracks at an instance level which event was selected for the session
+     * Check if a user already has a variant assigned for this experiment.
      */
-    public function instanceEvent()
+    public function hasExperiment(string $experiment): string|false
     {
-        self::$instance[$this->name] = $this;
-    }
+        if (! isset(self::$events)) {
+            return false;
+        }
 
-    /**
-     * @return bool
-     *
-     * Determines if a user has a particular event already in this session
-     */
-    public function hasExperiment($experiment)
-    {
-        foreach(self::$events as $session_events) {
-            if ($session_events->name == $experiment) {
-                return $session_events->value;
+        foreach (self::$events as $event) {
+            if ($event->name === $experiment) {
+                return $event->value;
             }
         }
+
         return false;
     }
 
-    public static function choice($experiment, $conditions)
+    /**
+     * Programmatic API for creating an experiment with named conditions.
+     *
+     * @param  array<int, string>  $conditions
+     */
+    public static function choice(string $experiment, array $conditions): self
     {
-        $ab = new self();
+        $ab = new self;
         $ab->experiment($experiment);
         foreach ($conditions as $condition) {
             $ab->conditions[$condition] = $condition;
         }
+
         return $ab;
     }
 
-    /**
-     * Simple method for resetting the session variable for development purposes.
-     */
-    public function forceReset()
+    public static function resetSession(): void
     {
-        self::resetSession();
+        self::$session = null;
+        self::$instance = [];
+        self::$events = new Collection;
     }
 
-    public function toArray()
+    /** @return array<string, string|null> */
+    public function toArray(): array
     {
         return [$this->name => $this->fired];
     }
 
-    public function getEvents()
+    /** @return array<string, PivotalAb> */
+    public function getEvents(): array
     {
         return self::$instance;
     }
 
-    public static function resetSession()
+    public static function sendEvent(string $event, mixed $payload): void
     {
-        self::$session = false;
-        self::$instance = null;
-    }
+        if (self::$session === null) {
+            return;
+        }
 
-    public static function sendEvent($event, $payload)
-    {
-        $track = new StdClass;
-        $model = new Goal();
+        $model = new Goal;
         $model->goal = $event;
         $model->value = $payload;
         $model->instance_id = self::$session->id;
-        $model->instance = self::$session->instance;
-        $track->model = $model;
+
+        $track = new \pivotalso\PivotalAb\Events\Track($model);
         EventQueue::addEvent($track);
+    }
+
+    /**
+     * Expand weighted conditions into a flat list for random selection.
+     *
+     * @return array<int, string>
+     */
+    protected function buildWeightedConditions(): array
+    {
+        $weighted = [];
+        foreach ($this->conditions as $key => $content) {
+            if (preg_match('/\[(\d+)\]/', $key, $matches)) {
+                for ($i = 0; $i < (int) $matches[1]; $i++) {
+                    $weighted[] = $key;
+                }
+            }
+        }
+
+        return $weighted ?: array_keys($this->conditions);
     }
 }

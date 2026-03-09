@@ -2,32 +2,41 @@
 
 namespace pivotalso\PivotalAb\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use pivotalso\PivotalAb\Events\Track;
 
-class Experiments extends \Eloquent
+/**
+ * @property int $id
+ * @property string $experiment
+ * @property string $goal
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ *
+ * @method static self firstOrCreate(array<string, mixed> $attributes, array<string, mixed> $values = [])
+ * @method static \Illuminate\Database\Eloquent\Builder<static> orderBy(string $column, string $direction = 'asc')
+ */
+class Experiments extends Model
 {
     protected $table = 'ab_experiments';
 
     protected $fillable = ['experiment', 'goal'];
 
-    public static function boot()
+    protected static function booted(): void
     {
-        parent::boot();
-        self::created(function ($model) {
+        static::created(function (Experiments $model) {
             event(new Track($model));
         });
     }
 
-    public function events()
+    /** @return HasMany<Events, $this> */
+    public function events(): HasMany
     {
-        return $this->hasMany('pivotalso\PivotalAb\Models\Events');
+        return $this->hasMany(Events::class);
     }
 
-    /*public function goals(){
-        return $this->hasMany('EightyTwoRules\PivotalAb\Goal', 'goal','goal');
-    }*/
-
-    public function toExport()
+    /** @return array<string, mixed> */
+    public function toExport(): array
     {
         return $this->toArray();
     }

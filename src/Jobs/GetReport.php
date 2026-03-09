@@ -2,61 +2,47 @@
 
 namespace pivotalso\PivotalAb\Jobs;
 
+use Illuminate\Support\Facades\DB;
+
 class GetReport
 {
-    public $experiment;
+    public function __construct(
+        protected string $experiment
+    ) {}
 
-    /**
-     * Create a new job instance.
-     */
-    public function __construct(string $experiment)
-    {
-        $this->experiment = $experiment;
-    }
-
-    /**
-     * Execute the job.
-     */
-    public function handle()
-    {
-        return $this->printReport($this->experiment);
-    }
-
-    public function printReport($experiment)
+    /** @return list<array<string, mixed>> */
+    public function handle(): array
     {
         $info = [];
 
-        $full_count =
-            \DB::table('ab_events')
-                ->select(\DB::raw('ab_events.value,count(*) as hits'))
-                ->where('ab_events.name', '=', (string) $experiment)
-                ->groupBy('ab_events.value')
-                ->get();
+        $hits = DB::table('ab_events')
+            ->select(DB::raw('ab_events.value, count(*) as hits'))
+            ->where('ab_events.name', '=', $this->experiment)
+            ->groupBy('ab_events.value')
+            ->get();
 
-        foreach ($full_count as $record) {
+        foreach ($hits as $record) {
             $info[$record->value] = [
                 'condition' => $record->value,
                 'hits' => $record->hits,
                 'goals' => 0,
-                'conversion' => 0,
+                'conversion' => 0.0,
             ];
         }
 
-        $goal_count = \DB::table('ab_events')
-            ->select(\DB::raw('ab_events.value,count(ab_events.value) as goals'))
+        $goals = DB::table('ab_events')
+            ->select(DB::raw('ab_events.value, count(ab_events.value) as goals'))
             ->join('ab_goal', 'ab_goal.instance_id', '=', 'ab_events.instance_id')
-            ->where('ab_events.name', '=', (string) $experiment)
+            ->where('ab_events.name', '=', $this->experiment)
             ->groupBy('ab_events.value')
             ->get();
 
-        foreach ($goal_count as $record) {
+        foreach ($goals as $record) {
             $info[$record->value]['goals'] = $record->goals;
             $info[$record->value]['conversion'] = ($record->goals / $info[$record->value]['hits']) * 100;
         }
 
-        usort($info, function ($a, $b) {
-            return $a['conversion'] < $b['conversion'];
-        });
+        usort($info, fn ($a, $b) => $b['conversion'] <=> $a['conversion']);
 
         return $info;
     }

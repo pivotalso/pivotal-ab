@@ -3,24 +3,17 @@
 namespace pivotalso\PivotalAb;
 
 use Illuminate\Support\Facades\Blade;
+use pivotalso\PivotalAb\Commands\AbExport;
+use pivotalso\PivotalAb\Commands\AbReport;
+use pivotalso\PivotalAb\Http\Middleware\PivotalAbMiddleware;
+use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
-
-use pivotalso\PivotalAb\Commands\AbReport;
-use pivotalso\PivotalAb\Commands\AbExport;
-use pivotalso\PivotalAb\Http\Middleware\PivotalAbMiddleware;
-
 
 class PivotalAbServiceProvider extends PackageServiceProvider
 {
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
         $package
             ->name('laravel-ab')
             ->hasConfigFile()
@@ -39,57 +32,74 @@ class PivotalAbServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->publishMigrations();
             });
-
     }
 
-    public function register()
+    public function register(): void
     {
         parent::register();
-        $this->mergeConfigFrom(
-            __DIR__.'/../config/ab.php', 'laravel-ab'
-        );
-        $this->app->make('Illuminate\Contracts\Http\Kernel')->prependMiddlewareToGroup('web', PivotalAbMiddleware::class);
+
+        $this->mergeConfigFrom(__DIR__.'/../config/ab.php', 'laravel-ab');
         $this->app->bind('Ab', PivotalAb::class);
-        $this->registerCompiler();
+
+        $this->registerBladeDirectives();
     }
 
-    //    public function boot(): void
-    //    {
-    //        parent::boot();
-    //        Blade::directive('ab', function (string $expression) {
-    //            return sprintf("<H1>hi i'm an ab test %s after</H1>", $expression);
-    //        });
-    //    }
-
-
-    public function registerCompiler()
+    public function boot(): void
     {
-        Blade::extend(function ($view, $compiler) {
+        parent::boot();
 
-            while (preg_match_all('/@ab(?:.(?!@track|@ab))+.@track\([^\)]+\)+/si', $view, $sections_matches)) {
-                $sections = current($sections_matches);
-                foreach ($sections as $block) {
-                    $instance_id = preg_replace('/[^0-9]/', '', microtime().rand(100000, 999999));
+        $router = $this->app->make('router');
+        $router->pushMiddlewareToGroup('web', PivotalAbMiddleware::class);
+    }
 
-                    if (preg_match("/@ab\(([^\)]+)\)/", $block, $match)) {
-                        $experiment_name = preg_replace('/[^a-z0-9\_]/i', '', $match[1]);
-                        $instance = $experiment_name.'_'.$instance_id;
-                    } else {
-                        throw new \Exception('Experiment with no name not allowed');
-                    }
-                    $copy = preg_replace('/@ab\(.([^\)]+).\)/i', "<?php \${$instance} = App::make('Ab')->experiment('{$experiment_name}'); ?>", $block);
-
-                    $copy = preg_replace('/@condition\(([^\)]+)\)/i', "<?php \${$instance}->condition($1); ?>", $copy);
-
-                    $copy = preg_replace('/@track\(([^\)]+)\)/i', "<?php echo \${$instance}->track($1); ?>", $copy);
-
-                    $view = str_replace($block, $copy, $view);
+    protected function registerBladeDirectives(): void
+    {
+        Blade::extend(function (string $view): string {
+            // Process @ab...@track blocks, handling nested experiments
+            while (preg_match_all('/@ab(?:.(?!@track|@ab))+.@track\([^\)]+\)+/si', $view, $matches)) {
+                foreach ($matches[0] as $block) {
+                    $view = str_replace($block, $this->compileAbBlock($block), $view);
                 }
             }
 
-            $view = preg_replace('/@goal\(([^\)]+)\)/i', "<?php App::make('Ab')::goal($1); ?>", $view);
+            // Process standalone @goal directives
+            $view = preg_replace(
+                '/@goal\(([^\)]+)\)/i',
+                "<?php App::make('Ab')::goal($1); ?>",
+                $view
+            );
 
             return $view;
         });
+    }
+
+    protected function compileAbBlock(string $block): string
+    {
+        if (! preg_match("/@ab\(([^\)]+)\)/", $block, $match)) {
+            throw new \RuntimeException('Experiment with no name not allowed');
+        }
+
+        $experimentName = preg_replace('/[^a-z0-9\_]/i', '', $match[1]);
+        $instanceVar = $experimentName.'_'.preg_replace('/[^0-9]/', '', microtime().rand(100000, 999999));
+
+        $compiled = preg_replace(
+            '/@ab\(.([^\)]+).\)/i',
+            "<?php \${$instanceVar} = App::make('Ab')->experiment('{$experimentName}'); ?>",
+            $block
+        );
+
+        $compiled = preg_replace(
+            '/@condition\(([^\)]+)\)/i',
+            "<?php \${$instanceVar}->condition($1); ?>",
+            $compiled
+        );
+
+        $compiled = preg_replace(
+            '/@track\(([^\)]+)\)/i',
+            "<?php echo \${$instanceVar}->track($1); ?>",
+            $compiled
+        );
+
+        return $compiled;
     }
 }
